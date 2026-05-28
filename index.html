@@ -186,15 +186,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startBtn.addEventListener('click', async () => {
 
-        // 🔥 avvia AR / camera context
+        // avvia AR / camera context
         if (scene) {
             scene.play();
         }
 
-        // 🎬 fade out splash
+        // fade out splash
         splash.style.opacity = '0';
 
-        // 🧹 rimuove completamente la splash dopo animazione
+        // rimuove completamente la splash dopo animazione
         setTimeout(() => {
             splash.style.display = 'none';
         }, 500);
