@@ -1,133 +1,80 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AR WebApp Marker 1</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
-  <title>90s MEMORY AR</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background: black;
+    }
 
-  <!-- AFRAME -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    a-scene {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-  <!-- ARJS -->
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-
-  <!-- STYLE -->
-  <link rel="stylesheet" href="style.css" />
+    .overlay {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      color: white;
+      font-family: sans-serif;
+      font-size: 14px;
+      background: rgba(0,0,0,0.4);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash">
+<div class="overlay">AR attivo - Marker 1</div>
 
-    <div class="crt"></div>
+<a-scene
+  vr-mode-ui="enabled: false"
+  embedded
+  arjs="sourceType: webcam; debugUIEnabled: false;"
+  renderer="antialias: true; colorManagement: true; precision: medium;"
+>
 
-    <div class="splash-content">
+  <a-assets>
+    <!-- Tutti i modelli devono stare qui dentro assets/ -->
+    <a-asset-item id="model1" src="assets/model.glb"></a-asset-item>
+  </a-assets>
 
-      <h1>90s MEMORY AR</h1>
+  <!-- LUCE -->
+  <a-light type="ambient" intensity="0.8"></a-light>
+  <a-light type="directional" intensity="0.6" position="1 2 1"></a-light>
 
-      <p class="subtitle">
-        urban archive // 1990-1999
-      </p>
+  <!-- MARKER 1 (barcode AR.js) -->
+  <a-marker type="barcode" value="1">
+    <a-entity
+      gltf-model="#model1"
+      scale="0.5 0.5 0.5"
+      position="0 0 0"
+      rotation="0 180 0"
+    ></a-entity>
+  </a-marker>
 
-      <button id="enter-btn">
-        ENTER
-      </button>
+  <!-- CAMERA -->
+  <a-entity camera></a-entity>
 
-    </div>
-
-  </div>
-
-  <!-- UI OVERLAY -->
-  <div id="overlay">
-
-    <div class="top-bar">
-      OBJECT 04/10 — NOKIA 3310
-    </div>
-
-    <div class="bottom-bar">
-      Point camera at barcode marker #4
-    </div>
-
-  </div>
-
-  <!-- AR SCENE -->
-  <a-scene
-
-    embedded
-
-    vr-mode-ui="enabled: false"
-
-    renderer="
-      logarithmicDepthBuffer: true;
-      antialias: true;
-      alpha: true;
-    "
-
-    arjs="
-      trackingMethod: best;
-      sourceType: webcam;
-      debugUIEnabled: false;
-    "
-  >
-
-    <!-- LIGHT -->
-    <a-light
-      type="ambient"
-      intensity="1.4">
-    </a-light>
-
-    <!-- MARKER 4 -->
-    <a-marker
-      type="barcode"
-      value="4"
-    >
-
-      <!-- MODEL -->
-      <a-entity
-
-        gltf-model="assets/nokia8.glb"
-
-        position="0 0.02 0"
-
-        rotation="-90 12 4"
-
-        scale="0.35 0.35 0.35"
-
-      >
-      </a-entity>
-
-      <!-- SHADOW -->
-      <a-circle
-
-        position="0 0.01 0"
-
-        rotation="-90 0 0"
-
-        radius="0.45"
-
-        color="#000000"
-
-        opacity="0.22"
-
-      >
-      </a-circle>
-
-    </a-marker>
-
-    <!-- CAMERA -->
-    <a-entity camera></a-entity>
-
-  </a-scene>
-
-  <!-- APP -->
-  <script src="app.js"></script>
+</a-scene>
 
 </body>
 </html>
