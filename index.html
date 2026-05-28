@@ -176,5 +176,17 @@
 
     </a-scene>
 
+    <script>
+        document.getElementById('start-btn').addEventListener('click', function() {
+            const splash = document.getElementById('splash-screen');
+            // Sfuma la splash screen modificando l'opacità
+            splash.style.opacity = '0';
+            // Rimuove completamente l'elemento dal DOM dopo l'animazione (0.5s) per liberare la fotocamera
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 500);
+        });
+    </script>
+
 </body>
 </html>
