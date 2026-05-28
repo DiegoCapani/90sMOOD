@@ -16,6 +16,7 @@
       width: 100%;
       height: 100%;
       background: black;
+      font-family: monospace;
     }
 
     a-scene {
@@ -26,13 +27,68 @@
       height: 100%;
     }
 
+    /* RETRO SPLASH SCREEN (90s CRT STYLE) */
+    .splash {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: #00ff66;
+      text-align: left;
+      padding: 20px;
+      letter-spacing: 1px;
+      animation: flicker 0.12s infinite;
+    }
+
+    .splash-box {
+      border: 1px solid #00ff66;
+      padding: 20px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 0 15px #00ff6633;
+    }
+
+    .title {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .log {
+      font-size: 12px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .btn {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #00ff66;
+      background: transparent;
+      color: #00ff66;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background: #00ff6620;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.92; }
+      100% { opacity: 1; }
+    }
+
     .overlay {
       position: fixed;
       top: 10px;
       left: 10px;
       z-index: 10;
       color: white;
-      font-family: sans-serif;
       font-size: 14px;
       background: rgba(0,0,0,0.4);
       padding: 8px 12px;
@@ -43,9 +99,25 @@
 
 <body>
 
-<div class="overlay">AR attivo - Marker 1</div>
+<!-- RETRO SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-box">
+    <div class="title">AR SYSTEM BOOT v1.0</div>
+    <div class="log">
+> INITIALIZING MODULES...
+> CAMERA DRIVER LOADED
+> MARKER ENGINE READY
+> LOADING ASSETS FROM /assets
+> STATUS: OK
+    </div>
+    <div class="btn" onclick="startAR()">PRESS START</div>
+  </div>
+</div>
+
+<div class="overlay">MARKER 1 ACTIVE</div>
 
 <a-scene
+  id="scene"
   vr-mode-ui="enabled: false"
   embedded
   arjs="sourceType: webcam; debugUIEnabled: false;"
@@ -53,15 +125,13 @@
 >
 
   <a-assets>
-    <!-- Tutti i modelli devono stare qui dentro assets/ -->
-    <a-asset-item id="model1" src="assets/model.glb"></a-asset-item>
+    <a-asset-item id="model1" src="assets/models/model.glb"></a-asset-item>
   </a-assets>
 
-  <!-- LUCE -->
   <a-light type="ambient" intensity="0.8"></a-light>
   <a-light type="directional" intensity="0.6" position="1 2 1"></a-light>
 
-  <!-- MARKER 1 (barcode AR.js) -->
+  <!-- MARKER 1 -->
   <a-marker type="barcode" value="1">
     <a-entity
       gltf-model="#model1"
@@ -71,10 +141,20 @@
     ></a-entity>
   </a-marker>
 
-  <!-- CAMERA -->
   <a-entity camera></a-entity>
 
 </a-scene>
+
+<script>
+  function startAR() {
+    document.getElementById('splash').style.display = 'none';
+
+    const scene = document.querySelector('a-scene');
+    if (scene && scene.hasLoaded) {
+      // AR.js attiva automaticamente la camera
+    }
+  }
+</script>
 
 </body>
 </html>
