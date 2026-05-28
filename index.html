@@ -9,25 +9,44 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
     <style>
-        body { margin: 0; overflow: hidden; font-family: monospace; }
+        body { margin: 0; overflow: hidden; font-family: monospace; background-color: #000; }
+
+        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000; z-index: 9999;
+            background-color: #000000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.5s ease;
         }
-        /* Effetto CRT e Stile mantenuti */
+
+        /* Effetto Linee CRT TV */
         #splash-screen::before {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 2; background-size: 100% 4px, 6px 100%; pointer-events: none;
         }
-        .title-container { text-align: center; margin-bottom: 50px; transform: skewX(-10deg); z-index: 3; }
-        .title-main { font-size: 48px; color: #00ffff; text-transform: uppercase; text-shadow: 3px 3px #ff00ff; margin: 0; }
-        #start-btn { padding: 15px 40px; font-size: 22px; background: #00ff00; border: 4px solid #fff; cursor: pointer; z-index: 3; }
-        .loading-text { color: #fff; margin-top: 30px; animation: blink 1s infinite; z-index: 3; }
+
+        .title-container { text-align: center; margin-bottom: 50px; transform: skewX(-10deg); z-index: 3;}
+        .title-main { font-size: 48px; font-weight: 900; color: #00ffff; text-transform: uppercase; letter-spacing: 4px; text-shadow: 3px 3px 0px #ff00ff, 6px 6px 0px #000000; margin: 0; }
+        .title-sub { font-size: 18px; color: #ffff00; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; text-shadow: 2px 2px 0px #ff0000; }
+
+        #start-btn { 
+            padding: 15px 40px; font-size: 22px; font-family: monospace; font-weight: bold;
+            color: #ffffff; background: #00ff00; border: 4px solid #ffffff; 
+            box-shadow: 5px 5px 0px #ff00ff; cursor: pointer; text-transform: uppercase; z-index: 3;
+            outline: none;
+        }
+        #start-btn:active { box-shadow: 1px 1px 0px #ff00ff; transform: translate(4px, 4px); }
+
+        .loading-text {
+            color: #ffffff; margin-top: 30px; font-size: 14px; letter-spacing: 2px;
+            animation: blink 1s infinite; z-index: 3;
+        }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        /* Contenitore per la scena iniettata */
+        #scene-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
     </style>
 </head>
 <body>
@@ -35,6 +54,7 @@
     <div id="splash-screen">
         <div class="title-container">
             <h1 class="title-main">MEMORY90</h1>
+            <div class="title-sub">by Diego Capani</div>
         </div>
         <button id="start-btn">REMEMBER</button>
         <div class="loading-text">INSERT COIN TO PLAY...</div>
@@ -43,47 +63,59 @@
     <div id="scene-container"></div>
 
     <script>
+        // Carica la scena solo dopo il click e l'autorizzazione fotocamera
         document.getElementById('start-btn').addEventListener('click', async function() {
             try {
-                // 1. Chiedi permessi
+                // 1. Richiesta esplicita accesso fotocamera per svegliare il browser
                 await navigator.mediaDevices.getUserMedia({ video: true });
                 
-                // 2. Nascondi Splash
-                document.getElementById('splash-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 500);
+                // 2. Nascondi Splash Screen
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
 
-                // 3. Inserisci la A-Scene dinamicamente per forzare l'attivazione della camera
-                document.getElementById('scene-container').innerHTML = `
-                <a-scene embedded vr-mode-ui="enabled: false" 
-                         arjs="sourceType: webcam; trackingMethod: best; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
-                    <a-assets>
-                        <a-asset-item id="modello-1" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-2" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-3" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-4" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-5" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-6" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-7" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-8" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-9" src="assets/nokia8.glb"></a-asset-item>
-                        <a-asset-item id="modello-10" src="assets/nokia8.glb"></a-asset-item>
-                    </a-assets>
+                // 3. Inietta la scena AR completa
+                const sceneContainer = document.getElementById('scene-container');
+                sceneContainer.innerHTML = `
+                    <a-scene
+                        embedded
+                        vr-mode-ui="enabled: false"
+                        renderer="logarithmicDepthBuffer: true; alpha: true; antialias: true; colorManagement: true;"
+                        arjs="sourceType: webcam; trackingMethod: best; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
 
-                    <a-marker type="barcode" value="1"><a-entity gltf-model="#modello-1" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="2"><a-entity gltf-model="#modello-2" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="3"><a-entity gltf-model="#modello-3" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="4"><a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="5"><a-entity gltf-model="#modello-5" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="6"><a-entity gltf-model="#modello-6" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="7"><a-entity gltf-model="#modello-7" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="8"><a-entity gltf-model="#modello-8" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="9"><a-entity gltf-model="#modello-9" scale="0.5 0.5 0.5"></a-entity></a-marker>
-                    <a-marker type="barcode" value="10"><a-entity gltf-model="#modello-10" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-assets>
+                            <a-asset-item id="modello-1" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-2" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-3" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-4" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-5" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-6" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-7" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-8" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-9" src="assets/nokia8.glb"></a-asset-item>
+                            <a-asset-item id="modello-10" src="assets/nokia8.glb"></a-asset-item>
+                        </a-assets>
 
-                    <a-entity camera></a-entity>
-                </a-scene>`;
+                        <a-entity light="type: ambient; intensity: 0.8;"></a-entity>
+                        <a-entity light="type: directional; intensity: 0.6;" position="1 2 1"></a-entity>
+
+                        <a-marker type="barcode" value="1"><a-entity gltf-model="#modello-1" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="2"><a-entity gltf-model="#modello-2" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="3"><a-entity gltf-model="#modello-3" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="4"><a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="5"><a-entity gltf-model="#modello-5" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="6"><a-entity gltf-model="#modello-6" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="7"><a-entity gltf-model="#modello-7" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="8"><a-entity gltf-model="#modello-8" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="9"><a-entity gltf-model="#modello-9" scale="0.5 0.5 0.5"></a-entity></a-marker>
+                        <a-marker type="barcode" value="10"><a-entity gltf-model="#modello-10" scale="0.5 0.5 0.5"></a-entity></a-marker>
+
+                        <a-entity camera></a-entity>
+                    </a-scene>
+                `;
             } catch (err) {
-                alert("Errore fotocamera: Verifica i permessi nelle impostazioni del browser.");
+                alert("Errore fotocamera: Verifica che il sito sia in HTTPS e di aver concesso i permessi.");
+                console.error("Camera error:", err);
             }
         });
     </script>
