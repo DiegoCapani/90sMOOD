@@ -150,6 +150,8 @@
         <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
         <a-asset-item id="modello-4" src="assets/kodak400.glb"></a-asset-item>
         <a-asset-item id="modello-5" src="assets/nokia3310.glb"></a-asset-item>
+
+        <audio id="music-marker3" src="assets/hit1.mp3" preload="auto"></audio>
     </a-assets>
 
     <a-marker type="barcode" value="1">
@@ -168,7 +170,7 @@
         </a-plane>
     </a-marker>
 
-    <a-marker type="barcode" value="3">
+    <a-marker id="marker3" type="barcode" value="3">
         <a-entity gltf-model="#modello-3" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0">
         </a-entity>
 
@@ -208,21 +210,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const scene = document.querySelector('a-scene');
 
-    startBtn.addEventListener('click', async () => {
+    const marker3 = document.getElementById('marker3');
+    const music = document.getElementById('music-marker3');
 
-        // avvia AR / camera context
+    startBtn.addEventListener('click', () => {
+
         if (scene) {
             scene.play();
         }
 
-        // fade out splash
         splash.style.opacity = '0';
 
-        // rimuove completamente la splash dopo animazione
         setTimeout(() => {
             splash.style.display = 'none';
         }, 500);
+    });
 
+    marker3.addEventListener('markerFound', () => {
+        music.currentTime = 0;
+        music.play();
+    });
+
+    marker3.addEventListener('markerLost', () => {
+        music.pause();
+        music.currentTime = 0;
     });
 
 });
