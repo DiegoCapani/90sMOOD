@@ -234,12 +234,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const marker5 = document.getElementById('marker5');
     const music5 = document.getElementById('music-marker5');
 
-    startBtn.addEventListener('click', () => {
-        scene.play();
-        splash.style.opacity = '0';
+   startBtn.addEventListener('click', () => {
 
-        setTimeout(() => splash.style.display = 'none', 500);
+    scene.play();
+
+    // 🔓 UNLOCK AUDIO (VA QUI)
+    [music1, music2, music3, music4, music5].forEach(m => {
+        m.play().then(() => {
+            m.pause();
+            m.currentTime = 0;
+        }).catch(()=>{});
     });
+
+    splash.style.opacity = '0';
+
+    setTimeout(() => splash.style.display = 'none', 500);
+});
 
         // ===== MARKER 1 =====
     marker1.addEventListener('markerFound', () => {
