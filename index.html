@@ -147,8 +147,9 @@
     <a-assets>
         <a-asset-item id="modello-1" src="assets/nokia8.glb"></a-asset-item>
         <a-asset-item id="modello-2" src="assets/tamagotchi3.glb"></a-asset-item>
-        <a-asset-item id="modello-3" src="assets/nokia8.glb"></a-asset-item>
-        <a-asset-item id="modello-4" src="assets/nokia8.glb"></a-asset-item>
+        <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
+        <a-asset-item id="modello-4" src="assets/imacg3.glb"></a-asset-item>
+         <a-asset-item id="modello-5" src="assets/nokia8.glb"></a-asset-item>
     </a-assets>
 
     <a-marker type="barcode" value="1">
@@ -184,6 +185,17 @@
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 0 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
         </a-plane>
+    </a-marker>
+
+     <a-marker type="barcode" value="5">
+        <a-entity gltf-model="#modello-5" scale="3 3 3" position="0 0 0" rotation="90 0 0"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+        </a-entity>
+
+                <a-plane rotation="-90 0 0" width="4" height="4" position="0 0 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+        
     </a-marker>
 
     <a-entity camera></a-entity>
