@@ -211,30 +211,86 @@ document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const scene = document.querySelector('a-scene');
 
+    // MARKER 1
+    const marker1 = document.getElementById('marker1');
+    const music1 = document.getElementById('music-marker1');
+
+    // MARKER 2
+    const marker2 = document.getElementById('marker2');
+    const music2 = document.getElementById('music-marker2');
+
+    // MARKER 3
     const marker3 = document.getElementById('marker3');
-    const music = document.getElementById('music-marker3');
+    const music3 = document.getElementById('music-marker3');
+
+    // MARKER 4
+    const marker4 = document.getElementById('marker4');
+    const music4 = document.getElementById('music-marker4');
+
+    // MARKER 5
+    const marker5 = document.getElementById('marker5');
+    const music5 = document.getElementById('music-marker5');
 
     startBtn.addEventListener('click', () => {
-
-        if (scene) {
-            scene.play();
-        }
-
+        scene.play();
         splash.style.opacity = '0';
 
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 500);
+        setTimeout(() => splash.style.display = 'none', 500);
     });
 
+        // ===== MARKER 1 =====
+    marker1.addEventListener('markerFound', () => {
+        music1.currentTime = 0;
+        music1.play();
+    });
+
+        marker1.addEventListener('markerLost', () => {
+        music1.pause();
+        music1.currentTime = 0;
+    });
+
+    // ===== MARKER 2 =====
     marker3.addEventListener('markerFound', () => {
-        music.currentTime = 0;
-        music.play();
+        music2.currentTime = 0;
+        music2.play();
+    });
+
+            marker2.addEventListener('markerLost', () => {
+        music2.pause();
+        music2.currentTime = 0;
+    });
+
+    // ===== MARKER 3 =====
+    marker3.addEventListener('markerFound', () => {
+        music3.currentTime = 0;
+        music3.play();
     });
 
     marker3.addEventListener('markerLost', () => {
-        music.pause();
-        music.currentTime = 0;
+        music3.pause();
+        music3.currentTime = 0;
+    });
+
+    // ===== MARKER 4 =====
+    marker4.addEventListener('markerFound', () => {
+        music4.currentTime = 0;
+        music4.play();
+    });
+
+    marker4.addEventListener('markerLost', () => {
+        music4.pause();
+        music4.currentTime = 0;
+    });
+
+    // ===== MARKER 5 =====
+    marker5.addEventListener('markerFound', () => {
+        music5.currentTime = 0;
+        music5.play();
+    });
+
+    marker5.addEventListener('markerLost', () => {
+        music5.pause();
+        music5.currentTime = 0;
     });
 
 });
