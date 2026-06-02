@@ -149,7 +149,7 @@
         <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
         <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
         <a-asset-item id="modello-4" src="assets/kodak400.glb"></a-asset-item>
-         <a-asset-item id="modello-5" src="assets/nokia3310.glb"></a-asset-item>
+        <a-asset-item id="modello-5" src="assets/nokia3310.glb"></a-asset-item>
 
         <audio id="hit1" src="assets/hit1.mp3" preload="auto"></audio>
     </a-assets>
@@ -172,7 +172,7 @@
 
     <a-marker type="barcode" value="3">
         <a-entity gltf-model="#modello-3" scale="0.1 0.1 0.1" position="0 0 0" rotation="0 0 0">
-             <a-sound src="#hit1" autoplay="true" loop="true" volume="3"></a-sound>
+            <a-sound id="hit1" src="#hit1" loop="true" volume="2"></a-sound>
         </a-entity>
 
                 <a-plane rotation="-90 0 0" width="8" height="8" position="0 0 0"
