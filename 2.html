@@ -183,7 +183,7 @@ AFRAME.registerComponent('center-model', {
     </a-assets>
 
      <a-marker id="marker1" type="barcode" value="1">
-        <a-entity gltf-model="#modello-1" scale="0.01 0.01 0.01" position="0 0 -0.2" rotation="0 0 0"></a-entity>
+        <a-entity gltf-model="#modello-1" scale="0.01 0.01 0.01" center-model></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 0 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -191,7 +191,7 @@ AFRAME.registerComponent('center-model', {
     </a-marker>
 
    <a-marker id="marker2" type="barcode" value="2">
-        <a-entity gltf-model="#modello-2" scale="3 3 3" position="0 0 -0.2" rotation="0 0 0"></a-entity>
+        <a-entity gltf-model="#modello-2" scale="3 3 3" center-model></a-entity>
 
            <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.7 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -209,7 +209,7 @@ AFRAME.registerComponent('center-model', {
     </a-marker>
 
    <a-marker id="marker4" type="barcode" value="4">
-        <a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5" position="0 0 -0.2" rotation="0 0 0"></a-entity>
+        <a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5"  center-model></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
