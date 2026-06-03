@@ -209,16 +209,15 @@ AFRAME.registerComponent('center-model', {
     </a-marker>
 
    <a-marker id="marker4" type="barcode" value="4">
-        <a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5"  center-model></a-entity>
+        <a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5" center-model></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
         </a-plane>
     </a-marker>
 
-     <a-marker id="marker5" type="barcode" value="5" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2"> 
-        <a-entity gltf-model="#modello-5" scale="3 3 3" position="0 0 -0.2" rotation="90 0 0"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+     <a-marker id="marker5" type="barcode" value="5"> 
+        <a-entity gltf-model="#modello-5" scale="3 3 3" center-model>
         </a-entity>
 
                 <a-plane rotation="-90 0 0" width="4" height="4" position="0 0 0"
