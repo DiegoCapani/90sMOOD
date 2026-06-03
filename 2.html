@@ -277,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ===== MARKER 1 =====
     marker1.addEventListener('markerFound', () => {
+        music1.volume = 0.5;
         music1.currentTime = 0;
         music1.play();
     });
@@ -287,7 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== MARKER 2 =====
-    marker2.addEventListener('markerFound', () => {
+    marker2.addEventListener('markerFound', () => 
+        music2.volume = 0.5;
         music2.currentTime = 0;
         music2.play();
     });
@@ -299,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== MARKER 3 =====
     marker3.addEventListener('markerFound', () => {
+        music3.volume = 0.5;
         music3.currentTime = 0;
         music3.play();
     });
@@ -310,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== MARKER 4 =====
     marker4.addEventListener('markerFound', () => {
-        music4.volume = 0;
+        music4.volume = 0.0;
         music4.currentTime = 0;
         music4.play();
     });
@@ -322,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== MARKER 5 =====
     marker5.addEventListener('markerFound', () => {
-        music5.volume = 0;
+        music5.volume = 0.0;
         music5.currentTime = 0;
         music5.play();
     });
