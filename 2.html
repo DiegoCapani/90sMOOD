@@ -288,11 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== MARKER 2 =====
-    marker2.addEventListener('markerFound', () => 
-        music2.volume = 0.5;
-        music2.currentTime = 0;
-        music2.play();
-    });
+marker2.addEventListener('markerFound', () => {
+    music2.volume = 0.5;
+    music2.currentTime = 0;
+    music2.play();
+});
 
             marker2.addEventListener('markerLost', () => {
         music2.pause();
