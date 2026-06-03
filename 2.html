@@ -238,102 +238,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash-screen');
     const scene = document.querySelector('a-scene');
 
-    // MARKER 1
     const marker1 = document.getElementById('marker1');
-    const music1 = document.getElementById('music-marker1');
-
-    // MARKER 2
     const marker2 = document.getElementById('marker2');
-    const music2 = document.getElementById('music-marker2');
-
-    // MARKER 3
     const marker3 = document.getElementById('marker3');
-    const music3 = document.getElementById('music-marker3');
-
-    // MARKER 4
     const marker4 = document.getElementById('marker4');
-    const music4 = document.getElementById('music-marker4');
-
-    // MARKER 5
     const marker5 = document.getElementById('marker5');
+
+    const music1 = document.getElementById('music-marker1');
+    const music2 = document.getElementById('music-marker2');
+    const music3 = document.getElementById('music-marker3');
+    const music4 = document.getElementById('music-marker4');
     const music5 = document.getElementById('music-marker5');
 
-   startBtn.addEventListener('click', () => {
+    // START BUTTON
+    startBtn.addEventListener('click', async () => {
 
-    scene.play();
+        scene.play();
 
-    // 🔓 UNLOCK AUDIO (VA QUI)
-    [music1, music2, music3, music4, music5].forEach(m => {
-        m.play().then(() => {
-            m.pause();
-            m.currentTime = 0;
-        }).catch(()=>{});
+        // 🔓 AUDIO UNLOCK (fondamentale)
+        const unlock = [music1, music2, music3, music4, music5];
+
+        for (let m of unlock) {
+            try {
+                await m.play();
+                m.pause();
+                m.currentTime = 0;
+            } catch (e) {}
+        }
+
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 500);
     });
 
-    splash.style.opacity = '0';
+    function bind(marker, music, volume = 0.5) {
 
-    setTimeout(() => splash.style.display = 'none', 500);
-});
+        marker.addEventListener('markerFound', () => {
+            music.volume = volume;
+            music.currentTime = 0;
+            music.play();
+        });
 
-        // ===== MARKER 1 =====
-    marker1.addEventListener('markerFound', () => {
-        music1.volume = 0.5;
-        music1.currentTime = 0;
-        music1.play();
-    });
+        marker.addEventListener('markerLost', () => {
+            music.pause();
+            music.currentTime = 0;
+        });
+    }
 
-        marker1.addEventListener('markerLost', () => {
-        music1.pause();
-        music1.currentTime = 0;
-    });
-
-    // ===== MARKER 2 =====
-marker2.addEventListener('markerFound', () => {
-    music2.volume = 0.5;
-    music2.currentTime = 0;
-    music2.play();
-});
-
-            marker2.addEventListener('markerLost', () => {
-        music2.pause();
-        music2.currentTime = 0;
-    });
-
-    // ===== MARKER 3 =====
-    marker3.addEventListener('markerFound', () => {
-        music3.volume = 0.5;
-        music3.currentTime = 0;
-        music3.play();
-    });
-
-    marker3.addEventListener('markerLost', () => {
-        music3.pause();
-        music3.currentTime = 0;
-    });
-
-    // ===== MARKER 4 =====
-    marker4.addEventListener('markerFound', () => {
-        music4.volume = 0.0;
-        music4.currentTime = 0;
-        music4.play();
-    });
-
-    marker4.addEventListener('markerLost', () => {
-        music4.pause();
-        music4.currentTime = 0;
-    });
-
-    // ===== MARKER 5 =====
-    marker5.addEventListener('markerFound', () => {
-        music5.volume = 0.0;
-        music5.currentTime = 0;
-        music5.play();
-    });
-
-    marker5.addEventListener('markerLost', () => {
-        music5.pause();
-        music5.currentTime = 0;
-    });
+    bind(marker1, music1, 0.5);
+    bind(marker2, music2, 0.5);
+    bind(marker3, music3, 0.5);
+    bind(marker4, music4, 0.5);
+    bind(marker5, music5, 0.5);
 
 });
 </script>
