@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>90sMOOD</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>90sMOOD</title>
 
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
-   <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+<style>
+html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
     font-family: monospace;
 }
-       
-/* INIZIO STILE footer */
-    #footer-ui{
+
+/* FOOTER */
+#footer-ui{
     position:fixed;
     bottom:20px;
     left:50%;
@@ -34,456 +34,160 @@
     color:#00ffff;
     border:2px solid #00ffff;
     padding:12px 16px;
-    font-family:monospace;
     font-weight:bold;
-    font-size:16px;
 }
 
+/* INFO */
 #info-panel{
     position:fixed;
     left:20px;
     right:20px;
     bottom:90px;
     background:rgba(0,0,0,.85);
-    color:white;
+    color:#fff;
     padding:20px;
     border:2px solid #00ffff;
     display:none;
     z-index:9998;
 }
-
-#info-panel h2{
-    margin-top:0;
-    color:#00ffff;
-}
-
-/* FINE STILE footer */
-
-/* #splash-screen {
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at center,
-        #6a00ff 0%,
-        #1a0033 30%,
-        #000000 70%
-    );
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        transition: opacity 0.5s ease; 
-    }  */
-
-#splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    height: 100dvh; /* FIX mobile moderno */
-    background: radial-gradient(circle at center,
-        #6a00ff 0%,
-        #1a0033 40%,
-        #000000 80%
-    );
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-    /* CRT EFFECT */
-    #splash-screen::before {
-        content: " ";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            rgba(18, 16, 16, 0) 50%,
-            rgba(0, 0, 0, 0.25) 50%
-        ),
-        linear-gradient(
-            90deg,
-            rgba(255, 0, 0, 0.06),
-            rgba(0, 255, 0, 0.02),
-            rgba(0, 0, 255, 0.06)
-        );
-        background-size: 100% 4px, 6px 100%;
-        pointer-events: none;
-    }
-
-    .title-container {
-        text-align: center;
-        margin-bottom: 50px;
-        transform: skewX(-10deg);
-    }
-
-    .title-main {
-        font-size: 48px;
-        font-weight: 900;
-        color: #00ffff;
-        letter-spacing: 4px;
-        text-shadow: 3px 3px 0px #ff00ff, 6px 6px 0px #000;
-        margin: 0;
-    }
-
-    .title-sub {
-        font-size: 18px;
-        color: #ffff00;
-        margin-top: 10px;
-        text-shadow: 2px 2px 0px #ff0000;
-    }
-
-    #start-btn {
-        padding: 15px 40px;
-        font-size: 22px;
-        font-weight: bold;
-        color: #fff;
-        background: #00ff00;
-        border: 4px solid #fff;
-        box-shadow: 5px 5px 0px #ff00ff;
-        cursor: pointer;
-        text-transform: uppercase;
-    }
-
-    #start-btn:active {
-        transform: translate(4px, 4px);
-        box-shadow: 1px 1px 0px #ff00ff;
-    }
-
-    .loading-text {
-        color: #fff;
-        margin-top: 30px;
-        font-size: 12px;
-        animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-    }
 </style>
 </head>
+
 <body>
 
+<!-- SPLASH -->
 <div id="splash-screen">
-    <div class="title-container">
-        <h1 class="title-main">90sMOOD</h1>
-        <div class="title-sub">by Diego Capani</div>
-    </div>
+    <h1>90sMOOD</h1>
     <button id="start-btn">REMEMBER NOW!</button>
-    <div class="loading-text">INSERT COIN TO PLAY...</div>
 </div>
 
-<a-scene embedded
-    vr-mode-ui="enabled: false"
-    renderer="antialias: true; alpha: true"
-    arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
+<!-- FOOTER -->
+<div id="footer-ui">
+    <button id="info-btn">INFO</button>
+    <button id="photo-btn">📸</button>
+    <button id="rotate-btn">⟳</button>
+</div>
 
-    <a-assets>
-        <a-asset-item id="modello-1" src="assets/nokia3310.glb"></a-asset-item>
-        <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
-        <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
-        <a-asset-item id="modello-4" src="assets/locandina.glb"></a-asset-item>
-        <a-asset-item id="modello-5" src="assets/kodak400.glb"></a-asset-item>
-        <a-asset-item id="modello-6" src="assets/playstation.glb"></a-asset-item>
-        <a-asset-item id="modello-7" src="assets/gameboy.glb"></a-asset-item>
-        <a-asset-item id="modello-8" src="assets/supersantos.glb"></a-asset-item>
-        <a-asset-item id="modello-9" src="assets/dvdplayer.glb"></a-asset-item>
-        <a-asset-item id="modello-10" src="assets/casiof91w.glb"></a-asset-item>
-    </a-assets>
+<div id="info-panel">
+    <h2 id="object-name"></h2>
+    <p id="object-description"></p>
+</div>
 
-    <a-marker type="barcode" value="1">
-        <a-entity id="obj1" gltf-model="#modello-1" scale="0.02 0.02 0.02" position="0 0 0" rotation="-90 0 0"></a-entity>
-        
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.20 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
+<!-- SCENE -->
+<a-scene embedded vr-mode-ui="enabled:false"
+    renderer="antialias:true; alpha:true"
+    arjs="sourceType:webcam; detectionMode:mono_and_matrix; matrixCodeType:3x3; debugUIEnabled:false;">
 
-    <a-marker type="barcode" value="2">
-        <a-entity id="obj2" gltf-model="#modello-2" scale="3 3 3" position="0 0.3 0" rotation="-90 0 0"></a-entity>
+<a-assets>
+    <a-asset-item id="modello-1" src="assets/nokia3310.glb"></a-asset-item>
+    <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
+    <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
+</a-assets>
 
-           <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.4 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
+<a-marker type="barcode" value="1">
+    <a-entity gltf-model="#modello-1" id="obj1"></a-entity>
+</a-marker>
 
-    <a-marker type="barcode" value="3">
-        <a-entity id="obj3" gltf-model="#modello-3" scale="0.2 0.2 0.2" position="0 0 0" rotation="0 90 -90">
-        </a-entity>
+<a-marker type="barcode" value="2">
+    <a-entity gltf-model="#modello-2" id="obj2"></a-entity>
+</a-marker>
 
-                <a-plane rotation="-90 0 0" width="8" height="8" position="0 0 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-        
-    </a-marker>
+<a-marker type="barcode" value="3">
+    <a-entity gltf-model="#modello-3" id="obj3"></a-entity>
+</a-marker>
 
-    <a-marker type="barcode" value="4">
-        <a-entity id="obj4" gltf-model="#modello-4" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-    <a-marker type="barcode" value="5">
-        <a-entity id="obj5" gltf-model="#modello-5" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-      <a-marker type="barcode" value="6">
-        <a-entity id="obj6" gltf-model="#modello-6" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-      <a-marker type="barcode" value="7">
-        <a-entity id="obj7" gltf-model="#modello-7" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-      <a-marker type="barcode" value="8">
-        <a-entity id="obj8" gltf-model="#modello-8" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-      <a-marker type="barcode" value="9">
-        <a-entity id="obj9" gltf-model="#modello-9" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-     <a-marker type="barcode" value="10">
-        <a-entity id="obj10" gltf-model="#modello-10" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
-            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
-        </a-plane>
-    </a-marker>
-
-    <a-entity camera></a-entity>
-
+<a-entity camera></a-entity>
 </a-scene>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-      // inizio funzioni pulsanti footer
 let currentObject = null;
 let infoVisible = false;
 let rotationEnabled = false;
-     // fine funzioni pulsanti footer
-    
-    const startBtn = document.getElementById('start-btn');
-    const splash = document.getElementById('splash-screen');
-    const scene = document.querySelector('a-scene');
 
-    startBtn.addEventListener('click', async () => {
+const splash = document.getElementById('splash-screen');
+const startBtn = document.getElementById('start-btn');
+const scene = document.querySelector('a-scene');
 
-        // avvia AR / camera context
-        if (scene) {
-            scene.play();
-        }
-
-        // fade out splash
-        splash.style.opacity = '0';
-
-        // rimuove completamente la splash dopo animazione
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 500);
-
-    });
-
+startBtn?.addEventListener('click', () => {
+    scene?.play();
+    splash.style.opacity = '0';
+    setTimeout(()=> splash.style.display='none', 500);
 });
 
-      // richiama pulsanti footer
+/* MARKER TRACKING */
 document.querySelectorAll('a-marker').forEach(marker=>{
-
-    marker.addEventListener('markerFound',()=>{
-
-        currentObject =
-        marker.querySelector('a-entity');
-
+    marker.addEventListener('markerFound', ()=>{
+        currentObject = marker.querySelector('a-entity');
+        updateInfo(marker);
     });
 
-    marker.addEventListener('markerLost',()=>{
-
+    marker.addEventListener('markerLost', ()=>{
         currentObject = null;
-
     });
-
 });
 
-
-    const infoBtn = document.getElementById('info-btn');
+/* INFO */
+const infoBtn = document.getElementById('info-btn');
 const infoPanel = document.getElementById('info-panel');
 
-infoBtn.addEventListener('click',()=>{
-
+infoBtn?.addEventListener('click', ()=>{
     infoVisible = !infoVisible;
-
-    infoPanel.style.display =
-        infoVisible ? 'block' : 'none';
-
+    infoPanel.style.display = infoVisible ? 'block' : 'none';
 });
 
- // fine richiama pulsanti footer
-
-
-// INZIO DESCRIZIONI
-    
-    const descriptions = {
-
-1:{
-    name:"Nokia 3310",
-    description:"TESTO QUI"
-},
-
-2:{
-    name:"Tamagotchi",
-    description:"TESTO QUI"
-},
-
-3:{
-    name:"Discman",
-    description:"TESTO QUI"
-}
-
+/* DESCRIZIONI */
+const descriptions = {
+    1:{ name:"Nokia 3310", description:"Telefono indistruttibile anni 2000." },
+    2:{ name:"Tamagotchi", description:"Il tuo amico digitale da accudire." },
+    3:{ name:"Discman", description:"Musica portatile prima dello streaming." }
 };
 
-  // FINE DESCRIZIONI
+function updateInfo(marker){
+    if(!infoVisible) return;
+    const value = marker.getAttribute('value');
+    const data = descriptions[value];
+    if(!data) return;
 
-    // INIZIO ROTAZIONE
-    const rotateBtn =
-document.getElementById('rotate-btn');
+    document.getElementById('object-name').textContent = data.name;
+    document.getElementById('object-description').textContent = data.description;
+}
 
-rotateBtn.addEventListener('click',()=>{
-
+/* ROTATE */
+document.getElementById('rotate-btn')?.addEventListener('click', ()=>{
     if(!currentObject) return;
 
     rotationEnabled = !rotationEnabled;
 
     if(rotationEnabled){
-
-        currentObject.setAttribute(
-            'animation',
-            'property: rotation; to: 0 360 0; loop: true; dur: 8000'
-        );
-
-    }else{
-
-        currentObject.removeAttribute(
-            'animation'
-        );
-
+        currentObject.setAttribute('animation',
+            'property: rotation; to: 0 360 0; loop:true; dur:8000');
+    } else {
+        currentObject.removeAttribute('animation');
     }
-
 });
-   // FINE ROTAZIONE
-    
-       // INIZIO FOTO  
-const photoBtn =
-document.getElementById('photo-btn');
 
-
-    photoBtn.addEventListener('click',()=>{
-
-    const video =
-    document.querySelector('video');
-
+/* FOTO */
+document.getElementById('photo-btn')?.addEventListener('click', ()=>{
+    const video = document.querySelector('video');
     if(!video) return;
 
-    const canvas =
-    document.createElement('canvas');
-
+    const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    const ctx =
-    canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video,0,0);
 
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    const now = new Date();
-
-    const day =
-    String(now.getDate()).padStart(2,'0');
-
-    const month =
-    String(now.getMonth()+1)
-    .padStart(2,'0');
-
-    ctx.fillStyle='yellow';
-    ctx.font='40px monospace';
-
-    ctx.fillText(
-        `${day}/${month}/1996`,
-        30,
-        canvas.height-30
-    );
-
-    const link =
-    document.createElement('a');
-
-    link.download =
-    `90sMOOD_${day}_${month}_1996.png`;
-
-    link.href =
-    canvas.toDataURL('image/png');
-
+    const link = document.createElement('a');
+    link.download = '90sMOOD.png';
+    link.href = canvas.toDataURL();
     link.click();
-
 });
 
-    // FINE FOTO  
-    
+});
 </script>
-
-      // inizio pulsanti footer
-    <div id="footer-ui">
-
-    <button id="info-btn">INFO</button>
-
-    <button id="photo-btn">📸</button>
-
-    <button id="rotate-btn">⟳</button>
-
-</div>
-
-<div id="info-panel">
-    <h2 id="object-name">Nome Oggetto</h2>
-    <p id="object-description">
-        Descrizione oggetto...
-    </p>
-</div>
-// fine pulsanti footer
-    
 
 </body>
 </html>
