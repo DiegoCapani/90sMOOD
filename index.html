@@ -17,6 +17,47 @@
     overflow: hidden;
     font-family: monospace;
 }
+       
+/* INIZIO STILE footer */
+    #footer-ui{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:10px;
+    z-index:9998;
+}
+
+#footer-ui button{
+    background:#000;
+    color:#00ffff;
+    border:2px solid #00ffff;
+    padding:12px 16px;
+    font-family:monospace;
+    font-weight:bold;
+    font-size:16px;
+}
+
+#info-panel{
+    position:fixed;
+    left:20px;
+    right:20px;
+    bottom:90px;
+    background:rgba(0,0,0,.85);
+    color:white;
+    padding:20px;
+    border:2px solid #00ffff;
+    display:none;
+    z-index:9998;
+}
+
+#info-panel h2{
+    margin-top:0;
+    color:#00ffff;
+}
+
+/* FINE STILE footer */
 
 /* #splash-screen {
         position: fixed;
@@ -158,7 +199,7 @@
     </a-assets>
 
     <a-marker type="barcode" value="1">
-        <a-entity gltf-model="#modello-1" scale="0.02 0.02 0.02" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj1" gltf-model="#modello-1" scale="0.02 0.02 0.02" position="0 0 0" rotation="-90 0 0"></a-entity>
         
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.20 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -166,7 +207,7 @@
     </a-marker>
 
     <a-marker type="barcode" value="2">
-        <a-entity gltf-model="#modello-2" scale="3 3 3" position="0 0.3 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj2" gltf-model="#modello-2" scale="3 3 3" position="0 0.3 0" rotation="-90 0 0"></a-entity>
 
            <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.4 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -174,7 +215,7 @@
     </a-marker>
 
     <a-marker type="barcode" value="3">
-        <a-entity gltf-model="#modello-3" scale="0.2 0.2 0.2" position="0 0 0" rotation="0 90 -90">
+        <a-entity id="obj3" gltf-model="#modello-3" scale="0.2 0.2 0.2" position="0 0 0" rotation="0 90 -90">
         </a-entity>
 
                 <a-plane rotation="-90 0 0" width="8" height="8" position="0 0 0"
@@ -184,7 +225,7 @@
     </a-marker>
 
     <a-marker type="barcode" value="4">
-        <a-entity gltf-model="#modello-4" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj4" gltf-model="#modello-4" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -192,7 +233,7 @@
     </a-marker>
 
     <a-marker type="barcode" value="5">
-        <a-entity gltf-model="#modello-5" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj5" gltf-model="#modello-5" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -200,7 +241,7 @@
     </a-marker>
 
       <a-marker type="barcode" value="6">
-        <a-entity gltf-model="#modello-6" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj6" gltf-model="#modello-6" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -208,7 +249,7 @@
     </a-marker>
 
       <a-marker type="barcode" value="7">
-        <a-entity gltf-model="#modello-7" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj7" gltf-model="#modello-7" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -216,7 +257,7 @@
     </a-marker>
 
       <a-marker type="barcode" value="8">
-        <a-entity gltf-model="#modello-8" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj8" gltf-model="#modello-8" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -224,7 +265,7 @@
     </a-marker>
 
       <a-marker type="barcode" value="9">
-        <a-entity gltf-model="#modello-9" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj9" gltf-model="#modello-9" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -232,7 +273,7 @@
     </a-marker>
 
      <a-marker type="barcode" value="10">
-        <a-entity gltf-model="#modello-10" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+        <a-entity id="obj10" gltf-model="#modello-10" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
 
         <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
             material="src: assets/ombra.png; transparent: true; opacity: 0.6">
@@ -246,6 +287,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
+      // inizio funzioni pulsanti footer
+let currentObject = null;
+let infoVisible = false;
+let rotationEnabled = false;
+     // fine funzioni pulsanti footer
+    
     const startBtn = document.getElementById('start-btn');
     const splash = document.getElementById('splash-screen');
     const scene = document.querySelector('a-scene');
@@ -268,7 +315,175 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+      // richiama pulsanti footer
+document.querySelectorAll('a-marker').forEach(marker=>{
+
+    marker.addEventListener('markerFound',()=>{
+
+        currentObject =
+        marker.querySelector('a-entity');
+
+    });
+
+    marker.addEventListener('markerLost',()=>{
+
+        currentObject = null;
+
+    });
+
+});
+
+
+    const infoBtn = document.getElementById('info-btn');
+const infoPanel = document.getElementById('info-panel');
+
+infoBtn.addEventListener('click',()=>{
+
+    infoVisible = !infoVisible;
+
+    infoPanel.style.display =
+        infoVisible ? 'block' : 'none';
+
+});
+
+ // fine richiama pulsanti footer
+
+
+// INZIO DESCRIZIONI
+    
+    const descriptions = {
+
+1:{
+    name:"Nokia 3310",
+    description:"TESTO QUI"
+},
+
+2:{
+    name:"Tamagotchi",
+    description:"TESTO QUI"
+},
+
+3:{
+    name:"Discman",
+    description:"TESTO QUI"
+}
+
+};
+
+  // FINE DESCRIZIONI
+
+    // INIZIO ROTAZIONE
+    const rotateBtn =
+document.getElementById('rotate-btn');
+
+rotateBtn.addEventListener('click',()=>{
+
+    if(!currentObject) return;
+
+    rotationEnabled = !rotationEnabled;
+
+    if(rotationEnabled){
+
+        currentObject.setAttribute(
+            'animation',
+            'property: rotation; to: 0 360 0; loop: true; dur: 8000'
+        );
+
+    }else{
+
+        currentObject.removeAttribute(
+            'animation'
+        );
+
+    }
+
+});
+   // FINE ROTAZIONE
+    
+       // INIZIO FOTO  
+const photoBtn =
+document.getElementById('photo-btn');
+
+
+    photoBtn.addEventListener('click',()=>{
+
+    const video =
+    document.querySelector('video');
+
+    if(!video) return;
+
+    const canvas =
+    document.createElement('canvas');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx =
+    canvas.getContext('2d');
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const now = new Date();
+
+    const day =
+    String(now.getDate()).padStart(2,'0');
+
+    const month =
+    String(now.getMonth()+1)
+    .padStart(2,'0');
+
+    ctx.fillStyle='yellow';
+    ctx.font='40px monospace';
+
+    ctx.fillText(
+        `${day}/${month}/1996`,
+        30,
+        canvas.height-30
+    );
+
+    const link =
+    document.createElement('a');
+
+    link.download =
+    `90sMOOD_${day}_${month}_1996.png`;
+
+    link.href =
+    canvas.toDataURL('image/png');
+
+    link.click();
+
+});
+
+    // FINE FOTO  
+    
 </script>
+
+      // inizio pulsanti footer
+    <div id="footer-ui">
+
+    <button id="info-btn">INFO</button>
+
+    <button id="photo-btn">📸</button>
+
+    <button id="rotate-btn">⟳</button>
+
+</div>
+
+<div id="info-panel">
+    <h2 id="object-name">Nome Oggetto</h2>
+    <p id="object-description">
+        Descrizione oggetto...
+    </p>
+</div>
+// fine pulsanti footer
+    
 
 </body>
 </html>
