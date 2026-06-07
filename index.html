@@ -368,7 +368,7 @@ infoBtn.addEventListener('click', () => {
 
 /* 🔄 ROTAZIONE FIX (SENZA AFRAME BUG) */
 let rotating = false;
-let rotationY = 0;
+let rotationX = 0;
 
 rotateBtn.addEventListener('click', () => {
     if (!currentObject) return;
@@ -380,11 +380,11 @@ AFRAME.registerComponent('spin-system', {
     tick: function () {
         if (!currentObject || !rotating) return;
 
-        rotationY += 1.5;
+        rotationX += 1.5;
 
         currentObject.setAttribute('rotation', {
-            x: 0,
-            y: rotationY,
+            x: rotationX,
+            y: 0,
             z: 0
         });
     }
