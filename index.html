@@ -129,6 +129,9 @@
 
 
 #footer-ui{
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
     position:fixed;
     bottom:20px;
     left:50%;
@@ -136,6 +139,11 @@
     display:flex;
     gap:12px;
     z-index:9999;
+}
+
+#footer-ui.show{
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* 🎮 BOTTONI 90s */
@@ -306,7 +314,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
+document.getElementById('footer-ui').classList.add('show');
+    
 const startBtn = document.getElementById('start-btn');
 const splash = document.getElementById('splash-screen');
 const scene = document.querySelector('a-scene');
@@ -322,6 +331,9 @@ let infoVisible = false;
 startBtn.addEventListener('click', () => {
     scene?.play();
     splash.style.opacity = '0';
+
+    document.getElementById('footer-ui').classList.add('show'); // 🔥 QUI
+
     setTimeout(()=> splash.style.display='none', 500);
 });
 
