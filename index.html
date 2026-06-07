@@ -196,7 +196,7 @@
 </style>
 </head>
 <body>
-
+<audio id="shutter-sound" src="assets/shutter.mp3" preload="auto"></audio>
 <div id="splash-screen">
     <div class="title-container">
         <h1 class="title-main">90sMOOD</h1>
@@ -222,6 +222,7 @@
     renderer="antialias: true; alpha: true"
     arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
 
+    
     <a-assets>
         <a-asset-item id="modello-1" src="assets/nokia3310.glb"></a-asset-item>
         <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
@@ -232,7 +233,7 @@
         <a-asset-item id="modello-7" src="assets/supersantos.glb"></a-asset-item>
         <a-asset-item id="modello-8" src="assets/dvdplayer.glb"></a-asset-item>
         <a-asset-item id="modello-9" src="assets/casiof91w.glb"></a-asset-item>
-    </a-assets>
+        </a-assets>
 
     <a-marker type="barcode" value="1">
         <a-entity gltf-model="#modello-1" scale="0.02 0.02 0.02" position="0 0 0" rotation="-90 0 0"></a-entity>
@@ -404,26 +405,25 @@ setInterval(() => {
 
 /* PHOTO FIX */
 
-    let photoIndex = 0;
+let photoIndex = 0;
 
 function applyKodakLook(ctx, w, h) {
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
 
-    const imageData = ctx.getImageData(0, 0, w, h);
-    const data = imageData.data;
+    for (let i = 0; i < d.length; i += 4) {
+        const n = (Math.random() - 0.5) * 10;
 
-    for (let i = 0; i < data.length; i += 4) {
-        const noise = (Math.random() - 0.5) * 14;
-
-        data[i]     += noise;
-        data[i + 1] += noise * 0.8;
-        data[i + 2] += noise * 0.6;
+        d[i]     += n;
+        d[i + 1] += n * 0.8;
+        d[i + 2] += n * 0.6;
     }
 
-    ctx.putImageData(imageData, 0, 0);
+    ctx.putImageData(img, 0, 0);
 
     const vignette = ctx.createRadialGradient(
-        w/2, h/2, h/4,
-        w/2, h/2, h/1.2
+        w/2, h/2, h/3,
+        w/2, h/2, h
     );
 
     vignette.addColorStop(0, "rgba(0,0,0,0)");
@@ -431,17 +431,33 @@ function applyKodakLook(ctx, w, h) {
 
     ctx.fillStyle = vignette;
     ctx.fillRect(0, 0, w, h);
-
-    ctx.fillStyle = "rgba(255, 210, 140, 0.08)";
-    ctx.fillRect(0, 0, w, h);
 }
 
 photoBtn.addEventListener('click', () => {
+    const shutter = document.getElementById('shutter-sound');
+    // 🔊 SUONO IMMEDIATO
+    if (shutter) {
+        shutter.currentTime = 0;
+        shutter.play();
+    }
 
+    const flash = document.createElement('div');
+flash.style.position = "fixed";
+flash.style.inset = "0";
+flash.style.background = "white";
+flash.style.opacity = "0.8";
+flash.style.zIndex = "99999";
+flash.style.pointerEvents = "none";
+
+document.body.appendChild(flash);
+
+setTimeout(() => flash.remove(), 120);
+    
     const video = document.querySelector('video');
     const sceneEl = document.querySelector('a-scene');
+    const arCanvas = sceneEl?.canvas;
 
-    if (!video || video.readyState < 2) return;
+    if (!video || !arCanvas) return;
 
     const now = new Date();
     const day = String(now.getDate()).padStart(2,'0');
@@ -450,10 +466,11 @@ photoBtn.addEventListener('click', () => {
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
 
-            const arCanvas = sceneEl.canvas;
+            // 🔥 UP SCALE 2X (QUALITÀ HD)
+            const scale = 2;
 
-            const w = video.videoWidth;
-            const h = video.videoHeight;
+            const w = video.videoWidth * scale;
+            const h = video.videoHeight * scale;
 
             const final = document.createElement('canvas');
             final.width = w;
@@ -461,48 +478,36 @@ photoBtn.addEventListener('click', () => {
 
             const ctx = final.getContext('2d');
 
+            // migliora nitidezza
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+
             // 1️⃣ CAMERA
             ctx.drawImage(video, 0, 0, w, h);
 
-            // 2️⃣ AR OVERLAY (senza stretching)
-            const arRatio = arCanvas.width / arCanvas.height;
-            const videoRatio = w / h;
-
-            let drawW, drawH;
-
-            if (arRatio > videoRatio) {
-                drawW = w;
-                drawH = w / arRatio;
-            } else {
-                drawH = h;
-                drawW = h * arRatio;
-            }
-
-            const offsetX = (w - drawW) / 2;
-            const offsetY = (h - drawH) / 2;
-
-            ctx.drawImage(arCanvas, offsetX, offsetY, drawW, drawH);
+            // 2️⃣ AR overlay (stessa scala)
+            ctx.drawImage(arCanvas, 0, 0, w, h);
 
             // 3️⃣ KODAK LOOK
             applyKodakLook(ctx, w, h);
 
-            // 4️⃣ TEXT 90s
+            // 4️⃣ TESTO 90s
             ctx.fillStyle = "yellow";
-            ctx.font = "28px monospace";
-            ctx.fillText("90sMOOD", 30, h - 60);
-            ctx.fillText(`${day}/${month}/1996`, 30, h - 30);
+            ctx.font = `${40 * scale}px monospace`;
+            ctx.fillText("90sMOOD", 30 * scale, h - 80 * scale);
+            ctx.fillText(`${day}/${month}/1996`, 30 * scale, h - 30 * scale);
 
-            // 5️⃣ DOWNLOAD SEQUENZIALE
+            // 5️⃣ EXPORT
             photoIndex++;
 
             const link = document.createElement('a');
-            link.download = `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
-            link.href = final.toDataURL('image/png');
-            link.click();
+            link.download =
+                `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
 
+            link.href = final.toDataURL('image/png', 1.0);
+            link.click();
         });
     });
-
 });
 
 /* ATTIVA SYSTEM */
