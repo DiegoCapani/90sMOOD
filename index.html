@@ -381,27 +381,39 @@ infoBtn.addEventListener('click', () => {
 
 /* 🔄 ROTAZIONE FIX (SENZA AFRAME BUG) */
 let rotating = false;
-let rotationY = 0;
+let rotationZ = 0;
 
 rotateBtn.addEventListener('click', () => {
     if (!currentObject) return;
+
     rotating = !rotating;
+
+    // salva rotazione base solo la prima volta
+    if (currentObject && !currentObject.dataset.baseRot) {
+        const r = currentObject.getAttribute('rotation');
+        currentObject.dataset.baseRot = JSON.stringify(r);
+    }
 });
 
 /* LOOP VERO (ROBUSTO IN AR) */
-setInterval(() => {
+AFRAME.registerComponent('spin-system', {
+    tick: function () {
 
-    if (!currentObject || !rotating) return;
+        if (!currentObject || !rotating) return;
 
-    rotationY += 2;
+        rotationZ += 1.8;
 
-    currentObject.setAttribute('rotation', {
-        x: 0,
-        y: rotationY,
-        z: 0
-    });
+        const base = JSON.parse(
+            currentObject.dataset.baseRot || '{"x":0,"y":0,"z":0}'
+        );
 
-}, 16);
+        currentObject.setAttribute('rotation', {
+            x: base.x,
+            y: base.y,
+            z: base.z + rotationZ   // 🔥 asse frontale (come lo vedi)
+        });
+    }
+});
 
 /* PHOTO FIX */
 
