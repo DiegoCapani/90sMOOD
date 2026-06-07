@@ -314,7 +314,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-document.getElementById('footer-ui').classList.add('show');
+
     
 const startBtn = document.getElementById('start-btn');
 const splash = document.getElementById('splash-screen');
@@ -332,7 +332,7 @@ startBtn.addEventListener('click', () => {
     scene?.play();
     splash.style.opacity = '0';
 
-    document.getElementById('footer-ui').classList.add('show'); // 🔥 QUI
+    document.getElementById('footer-ui').classList.add('show'); // SOLO QUI
 
     setTimeout(()=> splash.style.display='none', 500);
 });
@@ -380,40 +380,42 @@ infoBtn.addEventListener('click', () => {
 
 /* 🔄 ROTAZIONE FIX (SENZA AFRAME BUG) */
 let rotating = false;
-let rotationX = 0;
+let rotationY = 0;
 
 rotateBtn.addEventListener('click', () => {
     if (!currentObject) return;
     rotating = !rotating;
 });
 
-/* tick globale (GIUSTO modo A-Frame) */
-AFRAME.registerComponent('spin-system', {
-    tick: function () {
-        if (!currentObject || !rotating) return;
+/* LOOP VERO (ROBUSTO IN AR) */
+setInterval(() => {
 
-        rotationX += 1.5;
+    if (!currentObject || !rotating) return;
 
-        currentObject.setAttribute('rotation', {
-            x: rotationX,
-            y: 0,
-            z: 0
-        });
-    }
-});
+    rotationY += 2;
+
+    currentObject.setAttribute('rotation', {
+        x: 0,
+        y: rotationY,
+        z: 0
+    });
+
+}, 16);
 
 /* PHOTO FIX */
 photoBtn.addEventListener('click', () => {
 
     const video = document.querySelector('video');
-    if (!video) return;
+
+    if (!video || video.readyState < 2) return;
 
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const now = new Date();
     const day = String(now.getDate()).padStart(2,'0');
@@ -421,6 +423,7 @@ photoBtn.addEventListener('click', () => {
 
     ctx.fillStyle = "yellow";
     ctx.font = "28px monospace";
+
     ctx.fillText("90sMOOD", 30, canvas.height - 60);
     ctx.fillText(`${day}/${month}/1996`, 30, canvas.height - 30);
 
