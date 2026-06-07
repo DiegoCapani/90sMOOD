@@ -311,11 +311,15 @@ const startBtn = document.getElementById('start-btn');
 const splash = document.getElementById('splash-screen');
 const scene = document.querySelector('a-scene');
 
+const infoBtn = document.getElementById('info-btn');
+const photoBtn = document.getElementById('photo-btn');
+const rotateBtn = document.getElementById('rotate-btn'); // 🔥 MANCAVA
+
 let currentObject = null;
 let infoVisible = false;
 
 /* START AR */
-startBtn.addEventListener('click', async () => {
+startBtn.addEventListener('click', () => {
     scene?.play();
     splash.style.opacity = '0';
     setTimeout(()=> splash.style.display='none', 500);
@@ -323,116 +327,99 @@ startBtn.addEventListener('click', async () => {
 
 /* DESCRIZIONI */
 const descriptions = {
-1:{ name:"Nokia 3310", description:"Telefono indistruttibile. Vibra come un ricordo." },
-2:{ name:"Tamagotchi", description:"Vita digitale fragile e affettuosa." },
-3:{ name:"Discman", description:"Musica che salta nelle curve del tempo." },
-4:{ name:"Kodak 400", description:"Attimi analogici dentro un rullino." },
-5:{ name:"PlayStation", description:"Primo viaggio dentro un altro mondo." },
-6:{ name:"Game Boy", description:"Pixel portatili, sogni tascabili." },
-7:{ name:"Supersantos", description:"Strade, polvere e pomeriggi infiniti." },
-8:{ name:"DVD Player", description:"Cinema in salotto, luci spente." },
-9:{ name:"Casio F91W", description:"Tempo semplice, eterno, preciso." }
+1:{ name:"Nokia 3310", description:"Telefono indistruttibile." },
+2:{ name:"Tamagotchi", description:"Vita digitale fragile." },
+3:{ name:"Discman", description:"Musica che salta." },
+4:{ name:"Kodak 400", description:"Memoria analogica." },
+5:{ name:"PlayStation", description:"Altro mondo." },
+6:{ name:"Game Boy", description:"Pixel portatili." },
+7:{ name:"Supersantos", description:"Strada e polvere." },
+8:{ name:"DVD Player", description:"Cinema in casa." },
+9:{ name:"Casio F91W", description:"Tempo eterno." }
 };
 
-/* MARKER TRACKING */
-document.querySelectorAll('a-marker').forEach(marker=>{
+/* MARKER */
+document.querySelectorAll('a-marker').forEach(marker => {
 
-    marker.addEventListener('markerFound', ()=>{
+    marker.addEventListener('markerFound', () => {
         currentObject = marker.querySelector('a-entity');
 
         const value = marker.getAttribute('value');
         const data = descriptions[value];
 
-        if(data){
+        if (data) {
             document.getElementById('object-name').textContent = data.name;
             document.getElementById('object-description').textContent = data.description;
         }
     });
 
-    marker.addEventListener('markerLost', ()=>{
+    marker.addEventListener('markerLost', () => {
         currentObject = null;
     });
+
 });
 
-/* INFO BUTTON */
-const infoBtn = document.getElementById('info-btn');
-const infoPanel = document.getElementById('info-panel');
-
-infoBtn.addEventListener('click', ()=>{
+/* INFO */
+infoBtn.addEventListener('click', () => {
     infoVisible = !infoVisible;
-    infoPanel.style.display = infoVisible ? 'block' : 'none';
+    document.getElementById('info-panel').style.display =
+        infoVisible ? 'block' : 'none';
 });
 
-/* ROTATE BUTTON */
+/* 🔄 ROTAZIONE FIX (SENZA AFRAME BUG) */
 let rotating = false;
 let rotationY = 0;
 
 rotateBtn.addEventListener('click', () => {
     if (!currentObject) return;
-
     rotating = !rotating;
-
-    if (!rotating) return;
-});
-    AFRAME.scenes[0].addEventListener('renderstart', () => {
-
-    AFRAME.scenes[0].addBehavior({
-        tick: function () {
-
-            if (!currentObject || !rotating) return;
-
-            rotationY += 1.2; // velocità
-
-            currentObject.setAttribute('rotation', {
-                x: 0,
-                y: rotationY,
-                z: 0
-            });
-        }
-    });
-
 });
 
-/* PHOTO BUTTON */
+/* tick globale (GIUSTO modo A-Frame) */
+AFRAME.registerComponent('spin-system', {
+    tick: function () {
+        if (!currentObject || !rotating) return;
+
+        rotationY += 1.5;
+
+        currentObject.setAttribute('rotation', {
+            x: 0,
+            y: rotationY,
+            z: 0
+        });
+    }
+});
+
+/* PHOTO FIX */
 photoBtn.addEventListener('click', () => {
 
     const video = document.querySelector('video');
-    if (!video || video.readyState < 2) return;
+    if (!video) return;
 
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext('2d');
-
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // watermark
-    ctx.fillStyle = "yellow";
-    ctx.font = "28px monospace";
+    ctx.drawImage(video, 0, 0);
 
     const now = new Date();
     const day = String(now.getDate()).padStart(2,'0');
     const month = String(now.getMonth()+1).padStart(2,'0');
 
+    ctx.fillStyle = "yellow";
+    ctx.font = "28px monospace";
     ctx.fillText("90sMOOD", 30, canvas.height - 60);
     ctx.fillText(`${day}/${month}/1996`, 30, canvas.height - 30);
 
-    const fileName = generateFileName(day, month);
-
     const link = document.createElement('a');
-    link.download = fileName;
+    link.download = `90sMOOD_${day}_${month}_1996_${Date.now()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 });
 
- let photoIndex = 0;
-function generateFileName(day, month){
-    photoIndex++;
-    return `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
-}
-
-    
+/* ATTIVA SYSTEM */
+scene.setAttribute('spin-system','');
 
 });
 </script>
