@@ -407,38 +407,42 @@ photoBtn.addEventListener('click', () => {
 
     const sceneEl = document.querySelector('a-scene');
 
-    sceneEl.renderer.preserveDrawingBuffer = true;
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2,'0');
+    const month = String(now.getMonth()+1).padStart(2,'0');
 
-    setTimeout(() => {
+    // aspetta 2 frame reali WebGL (fondamentale)
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
 
-        const canvas = sceneEl.canvas;
+            const canvas = sceneEl.canvas;
 
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2,'0');
-        const month = String(now.getMonth()+1).padStart(2,'0');
+            if (!canvas) return;
 
-        const copy = document.createElement('canvas');
-        copy.width = canvas.width;
-        copy.height = canvas.height;
+            const copy = document.createElement('canvas');
+            copy.width = canvas.width;
+            copy.height = canvas.height;
 
-        const ctx = copy.getContext('2d');
+            const ctx = copy.getContext('2d');
 
-        ctx.drawImage(canvas, 0, 0);
+            // FIX IMPORTANTE: background safety
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, copy.width, copy.height);
 
-        ctx.fillStyle = "yellow";
-        ctx.font = "28px monospace";
+            ctx.drawImage(canvas, 0, 0);
 
-        ctx.fillText("90sMOOD", 30, copy.height - 60);
-        ctx.fillText(`${day}/${month}/1996`, 30, copy.height - 30);
+            ctx.fillStyle = "yellow";
+            ctx.font = "28px monospace";
 
-        const link = document.createElement('a');
-        link.download = `90sMOOD_${day}_${month}_1996_${Date.now()}.png`;
-        link.href = copy.toDataURL('image/png');
-        link.click();
+            ctx.fillText("90sMOOD", 30, copy.height - 60);
+            ctx.fillText(`${day}/${month}/1996`, 30, copy.height - 30);
 
-        sceneEl.renderer.preserveDrawingBuffer = false;
-
-    }, 200);
+            const link = document.createElement('a');
+            link.download = `90sMOOD_${day}_${month}_1996_${Date.now()}.png`;
+            link.href = copy.toDataURL('image/png');
+            link.click();
+        });
+    });
 
 });
 
