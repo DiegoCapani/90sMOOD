@@ -410,10 +410,6 @@ photoBtn.addEventListener('click', () => {
 
     if (!video || video.readyState < 2) return;
 
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2,'0');
-    const month = String(now.getMonth()+1).padStart(2,'0');
-
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
 
@@ -428,26 +424,51 @@ photoBtn.addEventListener('click', () => {
 
             const ctx = final.getContext('2d');
 
-            // 1️⃣ SFONDO = VIDEO CAMERA
+            // 🎯 SFONDO CAMERA
             ctx.drawImage(video, 0, 0, w, h);
 
-            // 2️⃣ SOPRA = AR CANVAS
-            ctx.drawImage(arCanvas, 0, 0, w, h);
+            // 🎯 CALCOLO SCALE CORRETTO (NO STRETCH)
+            const arRatio = arCanvas.width / arCanvas.height;
+            const videoRatio = w / h;
 
-            // 3️⃣ WRAP 90s
+            let drawW, drawH;
+
+            if (arRatio > videoRatio) {
+                drawW = w;
+                drawH = w / arRatio;
+            } else {
+                drawH = h;
+                drawW = h * arRatio;
+            }
+
+            const offsetX = (w - drawW) / 2;
+            const offsetY = (h - drawH) / 2;
+
+            ctx.drawImage(arCanvas, offsetX, offsetY, drawW, drawH);
+
+            // 🟡 WRAP 90s
             ctx.fillStyle = "yellow";
             ctx.font = "28px monospace";
+
             ctx.fillText("90sMOOD", 30, h - 60);
-            ctx.fillText(`${day}/${month}/1996`, 30, h - 30);
+            ctx.fillText(getDateString(), 30, h - 30);
 
             const link = document.createElement('a');
-            link.download = `90sMOOD_${day}_${month}_1996_${Date.now()}.png`;
+            link.download = `90sMOOD_${Date.now()}.png`;
             link.href = final.toDataURL('image/png');
             link.click();
+
         });
     });
 
 });
+
+function getDateString(){
+    const now = new Date();
+    const d = String(now.getDate()).padStart(2,'0');
+    const m = String(now.getMonth()+1).padStart(2,'0');
+    return `${d}/${m}/1996`;
+}
 
 /* ATTIVA SYSTEM */
 scene.setAttribute('spin-system','');
