@@ -522,14 +522,14 @@ ctx.drawImage(arCanvas, offsetX, offsetY, drawW, drawH);
             ctx.fillText(`${day}/${month}/1996`, 30 * scale, h - 30 * scale);
 
             // 5️⃣ EXPORT
-            photoIndex++;
+photoIndex++;
 
-            const link = document.createElement('a');
-            link.download =
-                `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
+const fileName = `90sMOOD_${day}_${month}_1996_${photoIndex.toString().padStart(4,'0')}.png`;
 
-            link.href = final.toDataURL('image/png', 1.0);
-            link.click();
+const link = document.createElement('a');
+link.download = fileName;
+link.href = final.toDataURL('image/png', 1.0);
+link.click();
         });
     });
 });
