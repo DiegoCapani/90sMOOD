@@ -364,51 +364,75 @@ infoBtn.addEventListener('click', ()=>{
 });
 
 /* ROTATE BUTTON */
-rotateBtn.addEventListener('click', ()=>{
-    if(!currentObject) return;
+let rotating = false;
+let rotationY = 0;
 
-    const isRotating = currentObject.getAttribute('animation');
+rotateBtn.addEventListener('click', () => {
+    if (!currentObject) return;
 
-    if(isRotating){
-        currentObject.removeAttribute('animation');
-    } else {
-        currentObject.setAttribute('animation', {
-            property: 'rotation',
-            from: '0 0 0',
-            to: '0 360 0',
-            loop: true,
-            dur: 6000,
-            easing: 'linear'
-        });
-    }
+    rotating = !rotating;
+
+    if (!rotating) return;
+});
+    AFRAME.scenes[0].addEventListener('renderstart', () => {
+
+    AFRAME.scenes[0].addBehavior({
+        tick: function () {
+
+            if (!currentObject || !rotating) return;
+
+            rotationY += 1.2; // velocità
+
+            currentObject.setAttribute('rotation', {
+                x: 0,
+                y: rotationY,
+                z: 0
+            });
+        }
+    });
+
 });
 
 /* PHOTO BUTTON */
-const photoBtn = document.getElementById('photo-btn');
-
-photoBtn.addEventListener('click', ()=>{
+photoBtn.addEventListener('click', () => {
 
     const video = document.querySelector('video');
-    if(!video) return;
+    if (!video || video.readyState < 2) return;
 
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video,0,0,canvas.width,canvas.height);
 
-    // watermark retro
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // watermark
     ctx.fillStyle = "yellow";
-    ctx.font = "30px monospace";
+    ctx.font = "28px monospace";
+
     const now = new Date();
-    ctx.fillText("90sMOOD", 30, canvas.height - 40);
+    const day = String(now.getDate()).padStart(2,'0');
+    const month = String(now.getMonth()+1).padStart(2,'0');
+
+    ctx.fillText("90sMOOD", 30, canvas.height - 60);
+    ctx.fillText(`${day}/${month}/1996`, 30, canvas.height - 30);
+
+    const fileName = generateFileName(day, month);
 
     const link = document.createElement('a');
-    link.download = '90sMOOD.png';
+    link.download = fileName;
     link.href = canvas.toDataURL('image/png');
     link.click();
 });
+
+ let photoIndex = 0;
+function generateFileName(day, month){
+    photoIndex++;
+    return `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
+}
+
+    
 
 });
 </script>
