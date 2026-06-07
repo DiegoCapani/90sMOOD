@@ -128,38 +128,62 @@
     }
 
 
-
-    #footer-ui{
+#footer-ui{
     position:fixed;
     bottom:20px;
     left:50%;
     transform:translateX(-50%);
     display:flex;
-    gap:10px;
+    gap:12px;
     z-index:9999;
 }
 
+/* 🎮 BOTTONI 90s */
 #footer-ui button{
-    background:#000;
-    color:#00ffff;
-    border:2px solid #00ffff;
-    padding:12px 16px;
-    font-family:monospace;
-    font-weight:bold;
+    background: linear-gradient(180deg, #111 0%, #000 100%);
+    color: #00ffff;
+    border: 3px solid #ff00ff;
+    padding: 12px 16px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    box-shadow:
+        3px 3px 0px #00ffff,
+        6px 6px 0px #000;
+    cursor: pointer;
+    transition: all 0.1s ease;
 }
 
+#footer-ui button:active{
+    transform: translate(3px,3px);
+    box-shadow: 1px 1px 0px #00ffff;
+}
+
+/* 📟 BOX INFO 90s */
 #info-panel{
     position:fixed;
     left:20px;
     right:20px;
     bottom:90px;
-    background:rgba(0,0,0,.85);
-    color:#fff;
-    padding:20px;
-    border:2px solid #00ffff;
+    background: linear-gradient(135deg, #000 0%, #111 100%);
+    color:#00ffff;
+    padding:18px;
+    border:3px solid #ff00ff;
     display:none;
     z-index:9999;
-}   
+    box-shadow:
+        5px 5px 0px #00ffff,
+        10px 10px 0px #000;
+}
+
+#info-panel h2{
+    margin:0 0 8px 0;
+    color:#ff00ff;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
        
 </style>
 </head>
@@ -340,8 +364,6 @@ infoBtn.addEventListener('click', ()=>{
 });
 
 /* ROTATE BUTTON */
-const rotateBtn = document.getElementById('rotate-btn');
-
 rotateBtn.addEventListener('click', ()=>{
     if(!currentObject) return;
 
@@ -350,9 +372,14 @@ rotateBtn.addEventListener('click', ()=>{
     if(isRotating){
         currentObject.removeAttribute('animation');
     } else {
-        currentObject.setAttribute('animation',
-            'property: rotation; to: 0 360 0; loop:true; dur:6000'
-        );
+        currentObject.setAttribute('animation', {
+            property: 'rotation',
+            from: '0 0 0',
+            to: '0 360 0',
+            loop: true,
+            dur: 6000,
+            easing: 'linear'
+        });
     }
 });
 
