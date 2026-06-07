@@ -217,7 +217,7 @@
     <p id="object-description"></p>
 </div>
 
-<a-scene museum-lock embedded
+<a-scene embedded
     vr-mode-ui="enabled: false"
     renderer="antialias: true; alpha: true"
     arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
@@ -323,8 +323,7 @@ const scene = document.querySelector('a-scene');
 
 const infoBtn = document.getElementById('info-btn');
 const photoBtn = document.getElementById('photo-btn');
-const rotateBtn = document.getElementById('rotate-btn'); // 🔥 MANCAVA
-
+    
 let currentObject = null;
 let infoVisible = false;
 
@@ -377,44 +376,6 @@ infoBtn.addEventListener('click', () => {
     infoVisible = !infoVisible;
     document.getElementById('info-panel').style.display =
         infoVisible ? 'block' : 'none';
-});
-
-/* 🔄 ROTAZIONE FIX (SENZA AFRAME BUG) */
-let museumMode = false;
-let currentObject = null;
-
-rotateBtn.addEventListener('click', () => {
-    if (!currentObject) return;
-
-    museumMode = !museumMode;
-});
-
-AFRAME.registerComponent('museum-lock', {
-    tick: function () {
-
-        if (!currentObject || !museumMode) return;
-
-        const camera = document.querySelector('[camera]');
-        if (!camera) return;
-
-        const camWorldPos = new THREE.Vector3();
-        const objWorldPos = new THREE.Vector3();
-
-        camera.object3D.getWorldPosition(camWorldPos);
-        currentObject.object3D.getWorldPosition(objWorldPos);
-
-        const dir = new THREE.Vector3()
-            .subVectors(camWorldPos, objWorldPos)
-            .normalize();
-
-        const angleY = Math.atan2(dir.x, dir.z) * (180 / Math.PI);
-
-        currentObject.setAttribute('rotation', {
-            x: 0,
-            y: angleY,
-            z: 0
-        });
-    }
 });
 
 /* PHOTO FIX */
