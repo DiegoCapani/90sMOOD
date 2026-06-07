@@ -403,12 +403,49 @@ setInterval(() => {
 }, 16);
 
 /* PHOTO FIX */
+
+    let photoIndex = 0;
+
+function applyKodakLook(ctx, w, h) {
+
+    const imageData = ctx.getImageData(0, 0, w, h);
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+        const noise = (Math.random() - 0.5) * 14;
+
+        data[i]     += noise;
+        data[i + 1] += noise * 0.8;
+        data[i + 2] += noise * 0.6;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    const vignette = ctx.createRadialGradient(
+        w/2, h/2, h/4,
+        w/2, h/2, h/1.2
+    );
+
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.55)");
+
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = "rgba(255, 210, 140, 0.08)";
+    ctx.fillRect(0, 0, w, h);
+}
+
 photoBtn.addEventListener('click', () => {
 
     const video = document.querySelector('video');
     const sceneEl = document.querySelector('a-scene');
 
     if (!video || video.readyState < 2) return;
+
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2,'0');
+    const month = String(now.getMonth()+1).padStart(2,'0');
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -424,10 +461,10 @@ photoBtn.addEventListener('click', () => {
 
             const ctx = final.getContext('2d');
 
-            // 🎯 SFONDO CAMERA
+            // 1️⃣ CAMERA
             ctx.drawImage(video, 0, 0, w, h);
 
-            // 🎯 CALCOLO SCALE CORRETTO (NO STRETCH)
+            // 2️⃣ AR OVERLAY (senza stretching)
             const arRatio = arCanvas.width / arCanvas.height;
             const videoRatio = w / h;
 
@@ -446,15 +483,20 @@ photoBtn.addEventListener('click', () => {
 
             ctx.drawImage(arCanvas, offsetX, offsetY, drawW, drawH);
 
-            // 🟡 WRAP 90s
+            // 3️⃣ KODAK LOOK
+            applyKodakLook(ctx, w, h);
+
+            // 4️⃣ TEXT 90s
             ctx.fillStyle = "yellow";
             ctx.font = "28px monospace";
-
             ctx.fillText("90sMOOD", 30, h - 60);
-            ctx.fillText(getDateString(), 30, h - 30);
+            ctx.fillText(`${day}/${month}/1996`, 30, h - 30);
+
+            // 5️⃣ DOWNLOAD SEQUENZIALE
+            photoIndex++;
 
             const link = document.createElement('a');
-            link.download = `90sMOOD_${Date.now()}.png`;
+            link.download = `90sMOOD_${day}_${month}_1996_${String(photoIndex).padStart(4,'0')}.png`;
             link.href = final.toDataURL('image/png');
             link.click();
 
@@ -462,13 +504,6 @@ photoBtn.addEventListener('click', () => {
     });
 
 });
-
-function getDateString(){
-    const now = new Date();
-    const d = String(now.getDate()).padStart(2,'0');
-    const m = String(now.getMonth()+1).padStart(2,'0');
-    return `${d}/${m}/1996`;
-}
 
 /* ATTIVA SYSTEM */
 scene.setAttribute('spin-system','');
