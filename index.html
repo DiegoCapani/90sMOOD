@@ -227,12 +227,13 @@
         <a-asset-item id="modello-1" src="assets/nokia3310.glb"></a-asset-item>
         <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
         <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
-        <a-asset-item id="modello-4" src="assets/kodak400.glb"></a-asset-item>
-        <a-asset-item id="modello-5" src="assets/playstation.glb"></a-asset-item>
-        <a-asset-item id="modello-6" src="assets/gameboy.glb"></a-asset-item>
-        <a-asset-item id="modello-7" src="assets/supersantos.glb"></a-asset-item>
-        <a-asset-item id="modello-8" src="assets/dvdplayer.glb"></a-asset-item>
-        <a-asset-item id="modello-9" src="assets/casiof91w.glb"></a-asset-item>
+        <a-asset-item id="modello-4" src="assets/locandina.glb"></a-asset-item>
+        <a-asset-item id="modello-5" src="assets/kodak400.glb"></a-asset-item>
+        <a-asset-item id="modello-6" src="assets/playstation.glb"></a-asset-item>
+        <a-asset-item id="modello-7" src="assets/gameboy.glb"></a-asset-item>
+        <a-asset-item id="modello-8" src="assets/supersantos.glb"></a-asset-item>
+        <a-asset-item id="modello-9" src="assets/dvdplayer.glb"></a-asset-item>
+        <a-asset-item id="modello-10" src="assets/casiof91w.glb"></a-asset-item>
         </a-assets>
 
     <a-marker type="barcode" value="1">
@@ -309,6 +310,14 @@
         </a-plane>
     </a-marker>
 
+          <a-marker type="barcode" value="10">
+        <a-entity gltf-model="#modello-10" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
     <a-entity camera></a-entity>
 
 </a-scene>
@@ -342,12 +351,13 @@ const descriptions = {
 1:{ name:"Nokia 3310", description:"Telefono indistruttibile." },
 2:{ name:"Tamagotchi", description:"Vita digitale fragile." },
 3:{ name:"Discman", description:"Musica che salta." },
-4:{ name:"Kodak 400", description:"Memoria analogica." },
-5:{ name:"PlayStation", description:"Altro mondo." },
-6:{ name:"Game Boy", description:"Pixel portatili." },
-7:{ name:"Supersantos", description:"Strada e polvere." },
-8:{ name:"DVD Player", description:"Cinema in casa." },
-9:{ name:"Casio F91W", description:"Tempo eterno." }
+4:{ name:"Mamma ho perso l'areo", description:"Film Cult." },
+5:{ name:"Kodak 400", description:"Memoria analogica." },
+6:{ name:"PlayStation", description:"Altro mondo." },
+7:{ name:"Game Boy", description:"Pixel portatili." },
+8:{ name:"Supersantos", description:"Strada e polvere." },
+9:{ name:"DVD Player", description:"Cinema in casa." },
+10:{ name:"Casio F91W", description:"Tempo eterno." }
 };
 
 /* MARKER */
