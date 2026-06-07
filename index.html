@@ -405,41 +405,44 @@ setInterval(() => {
 /* PHOTO FIX */
 photoBtn.addEventListener('click', () => {
 
+    const video = document.querySelector('video');
     const sceneEl = document.querySelector('a-scene');
+
+    if (!video || video.readyState < 2) return;
 
     const now = new Date();
     const day = String(now.getDate()).padStart(2,'0');
     const month = String(now.getMonth()+1).padStart(2,'0');
 
-    // aspetta 2 frame reali WebGL (fondamentale)
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
 
-            const canvas = sceneEl.canvas;
+            const arCanvas = sceneEl.canvas;
 
-            if (!canvas) return;
+            const w = video.videoWidth;
+            const h = video.videoHeight;
 
-            const copy = document.createElement('canvas');
-            copy.width = canvas.width;
-            copy.height = canvas.height;
+            const final = document.createElement('canvas');
+            final.width = w;
+            final.height = h;
 
-            const ctx = copy.getContext('2d');
+            const ctx = final.getContext('2d');
 
-            // FIX IMPORTANTE: background safety
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, copy.width, copy.height);
+            // 1️⃣ SFONDO = VIDEO CAMERA
+            ctx.drawImage(video, 0, 0, w, h);
 
-            ctx.drawImage(canvas, 0, 0);
+            // 2️⃣ SOPRA = AR CANVAS
+            ctx.drawImage(arCanvas, 0, 0, w, h);
 
+            // 3️⃣ WRAP 90s
             ctx.fillStyle = "yellow";
             ctx.font = "28px monospace";
-
-            ctx.fillText("90sMOOD", 30, copy.height - 60);
-            ctx.fillText(`${day}/${month}/1996`, 30, copy.height - 30);
+            ctx.fillText("90sMOOD", 30, h - 60);
+            ctx.fillText(`${day}/${month}/1996`, 30, h - 30);
 
             const link = document.createElement('a');
             link.download = `90sMOOD_${day}_${month}_1996_${Date.now()}.png`;
-            link.href = copy.toDataURL('image/png');
+            link.href = final.toDataURL('image/png');
             link.click();
         });
     });
