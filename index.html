@@ -16,13 +16,25 @@
     height: 100%;
     overflow: hidden;
     font-family: monospace;
+      
     display: flex;
     justify-content: center;
+    align-items: center;
+    background: black;
 }
 
-   a-scene {
-    width: 56.25vh;
+ #app {
+    width: 100vw;
     height: 100vh;
+    max-width: 56.25vh; /* 9:16 */
+    max-height: 177.78vw; /* 9:16 */
+    position: relative;
+}
+
+a-scene {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
 }
 
 /* #splash-screen {
@@ -210,6 +222,7 @@
 </style>
 </head>
 <body>
+    <div id="app">
 <audio id="shutter-sound" src="assets/shutter.mp3" preload="auto"></audio>
 <div id="splash-screen">
     <div class="title-container">
@@ -538,6 +551,7 @@ scene.setAttribute('spin-system','');
 
 });
 </script>
-
+        
+</div>
 </body>
 </html>
