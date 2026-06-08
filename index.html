@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>90sMOOD</title>
+
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+   <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: monospace;
+    display: flex;
+    justify-content: center;
+}
+
+     a-scene {
+    width: 56.25vh;
+    height: 100vh;
+}
+
+/* #splash-screen {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center,
+        #6a00ff 0%,
+        #1a0033 30%,
+        #000000 70%
+    );
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: opacity 0.5s ease; 
+    }  */
+
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh; /* FIX mobile moderno */
+    background: radial-gradient(circle at center,
+        #6a00ff 0%,
+        #1a0033 40%,
+        #000000 80%
+    );
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    /* CRT EFFECT */
+    #splash-screen::before {
+        content: " ";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+        );
+        background-size: 100% 4px, 6px 100%;
+        pointer-events: none;
+    }
+
+    .title-container {
+        text-align: center;
+        margin-bottom: 50px;
+        transform: skewX(-10deg);
+    }
+
+    .title-main {
+        font-size: 48px;
+        font-weight: 900;
+        color: #00ffff;
+        letter-spacing: 4px;
+        text-shadow: 3px 3px 0px #ff00ff, 6px 6px 0px #000;
+        margin: 0;
+    }
+
+    .title-sub {
+        font-size: 18px;
+        color: #ffff00;
+        margin-top: 10px;
+        text-shadow: 2px 2px 0px #ff0000;
+    }
+
+    #start-btn {
+        padding: 15px 40px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #fff;
+        background: #00ff00;
+        border: 4px solid #fff;
+        box-shadow: 5px 5px 0px #ff00ff;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+
+    #start-btn:active {
+        transform: translate(4px, 4px);
+        box-shadow: 1px 1px 0px #ff00ff;
+    }
+
+    .loading-text {
+        color: #fff;
+        margin-top: 30px;
+        font-size: 12px;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+
+#footer-ui{
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:12px;
+    z-index:9999;
+}
+
+#footer-ui.show{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 🎮 BOTTONI 90s */
+#footer-ui button{
+    background: linear-gradient(180deg, #111 0%, #000 100%);
+    color: #00ffff;
+    border: 3px solid #ff00ff;
+    padding: 12px 16px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    box-shadow:
+        3px 3px 0px #00ffff,
+        6px 6px 0px #000;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+#footer-ui button:active{
+    transform: translate(3px,3px);
+    box-shadow: 1px 1px 0px #00ffff;
+}
+
+/* 📟 BOX INFO 90s */
+#info-panel{
+    position:fixed;
+    left:20px;
+    right:20px;
+    bottom:90px;
+    background: linear-gradient(135deg, #000 0%, #111 100%);
+    color:#00ffff;
+    padding:18px;
+    border:3px solid #ff00ff;
+    display:none;
+    z-index:9999;
+    box-shadow:
+        5px 5px 0px #00ffff,
+        10px 10px 0px #000;
+}
+
+#info-panel h2{
+    margin:0 0 8px 0;
+    color:#ff00ff;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.splash-logo {
+    pointer-events: none;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+}  
+       
+</style>
+</head>
+<body>
+<audio id="shutter-sound" src="assets/shutter.mp3" preload="auto"></audio>
+<div id="splash-screen">
+    <div class="title-container">
+        <h1 class="title-main">90sMOOD</h1>
+        <div class="title-sub">by Diego Capani</div>
+    </div>
+    <button id="start-btn">REMEMBER NOW!</button>
+    <div class="loading-text">TOUCH TO PLAY...</div>
+    <img src="assets/logonotte.jpg" class="splash-logo" alt="logo">
+</div>
+
+    <div id="footer-ui">
+    <button id="info-btn">📋</button>
+    <button id="photo-btn">📸</button>
+</div>
+
+<div id="info-panel">
+    <h2 id="object-name"></h2>
+    <p id="object-description"></p>
+</div>
+
+<a-scene embedded
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true"
+    arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
+
+    
+    <a-assets>
+        <a-asset-item id="modello-1" src="assets/nokia3310.glb"></a-asset-item>
+        <a-asset-item id="modello-2" src="assets/tamagotchi.glb"></a-asset-item>
+        <a-asset-item id="modello-3" src="assets/discman.glb"></a-asset-item>
+        <a-asset-item id="modello-4" src="assets/locandina.glb"></a-asset-item>
+        <a-asset-item id="modello-5" src="assets/kodak400.glb"></a-asset-item>
+        <a-asset-item id="modello-6" src="assets/playstation.glb"></a-asset-item>
+        <a-asset-item id="modello-7" src="assets/gameboy.glb"></a-asset-item>
+        <a-asset-item id="modello-8" src="assets/supersantos.glb"></a-asset-item>
+        <a-asset-item id="modello-9" src="assets/dvdplayer.glb"></a-asset-item>
+        <a-asset-item id="modello-10" src="assets/casiof91w.glb"></a-asset-item>
+        </a-assets>
+
+    <a-marker type="barcode" value="1">
+        <a-entity gltf-model="#modello-1" scale="0.02 0.02 0.02" position="0 0 0" rotation="-90 0 0"></a-entity>
+        
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.20 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+    <a-marker type="barcode" value="2">
+        <a-entity gltf-model="#modello-2" scale="3 3 3" position="0 0.3 0" rotation="-90 0 0"></a-entity>
+
+           <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.4 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+    <a-marker type="barcode" value="3">
+        <a-entity gltf-model="#modello-3" scale="0.2 0.2 0.2" position="0 0 0" rotation="0 90 -90">
+        </a-entity>
+
+                <a-plane rotation="-90 0 0" width="8" height="8" position="0 0 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+        
+    </a-marker>
+
+    <a-marker type="barcode" value="4">
+        <a-entity gltf-model="#modello-4" scale="1 1 1" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+    <a-marker type="barcode" value="5">
+        <a-entity gltf-model="#modello-5" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+      <a-marker type="barcode" value="6">
+        <a-entity gltf-model="#modello-6" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+      <a-marker type="barcode" value="7">
+        <a-entity gltf-model="#modello-7" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+      <a-marker type="barcode" value="8">
+        <a-entity gltf-model="#modello-8" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+      <a-marker type="barcode" value="9">
+        <a-entity gltf-model="#modello-9" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+          <a-marker type="barcode" value="10">
+        <a-entity gltf-model="#modello-10" scale="0.5 0.5 0.5" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+        <a-plane rotation="-90 0 0" width="4" height="4" position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+
+</a-scene>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    
+const startBtn = document.getElementById('start-btn');
+const splash = document.getElementById('splash-screen');
+const scene = document.querySelector('a-scene');
+
+const infoBtn = document.getElementById('info-btn');
+const photoBtn = document.getElementById('photo-btn');
+    
+let currentObject = null;
+let infoVisible = false;
+
+/* START AR */
+startBtn.addEventListener('click', () => {
+    scene?.play();
+    splash.style.opacity = '0';
+
+    document.getElementById('footer-ui').classList.add('show'); // SOLO QUI
+
+    setTimeout(()=> splash.style.display='none', 500);
+});
+
+/* DESCRIZIONI */
+const descriptions = {
+1:{ name:"Nokia 3310", description:"Grazie alla sua semplicità, affidabilità e alla leggendaria indistruttibilità, il Nokia 3310 conquistò milioni di utenti in tutto il mondo, raggiungendo circa 126 milioni di unità vendute, un risultato che lo rende ancora oggi uno dei cellulari più venduti di sempre." },
+2:{ name:"Tamagotchi", description:"Lanciato nel 1996 dalla Bandai, il Tamagotchi è uno dei giochi elettronici più iconici di sempre. Questo piccolo dispositivo permetteva di accudire un animaletto virtuale, nutrendolo e curandolo giorno dopo giorno. Grazie al forte coinvolgimento emotivo, ha conquistato milioni di bambini e ragazzi in tutto il mondo, superando 90 milioni di unità vendute." },
+3:{ name:"Discman", description:"Il Discman della Sony è il lettore CD portatile pr eccelenza. Permetteva di ascoltare musica su CD in mobilità, ma soffriva di salti del disco con i movimenti. È diventato un’icona degli anni ’90, simbolo del passaggio dal nastro magnetico al supporto digitale." },
+4:{ name:"Mamma, ho perso l’aereo", description:"È una commedia natalizia cult in cui il piccolo Kevin viene dimenticato a casa dalla famiglia e deve difendersi da due ladri improvvisati. Il film ha avuto un enorme successo mondiale ed è diventato uno dei simboli del cinema di Natale, lanciando la carriera di Macaulay Culkin." },
+5:{ name:"Kodak 400", description:"La Kodak ISO 400 è una pellicola a colori pensata per offrire maggiore versatilità in condizioni di luce variabile. Negli anni ’90 diventa molto diffusa tra amatori e famiglie grazie alla sua praticità e all’uso nelle fotocamere compatte." },
+6:{ name:"PlayStation", description:"La PlayStation è una console per videogiochi lanciata nel 1994 da Sony. Ha segnato l’inizio del gaming moderno su CD-ROM, portando grafica 3D e titoli iconici nelle case di milioni di giocatori. È diventata una delle console più influenti e vendute della storia dei videogiochi." },
+7:{ name:"Game Boy", description:"Il Game Boy è una console portatile lanciata nel 1989 da Nintendo. Ha reso il gaming portatile un fenomeno di massa grazie a titoli come Tetris e alla sua grande autonomia. È diventato una delle console più iconiche e vendute della storia." },
+8:{ name:"Supersantos", description:"Il Super Santos è il celebre pallone leggero in plastica morbida prodotto da Mondo. Negli anni ’90 però diventa popolare, perché è il pallone tipico dei giochi di strada di quel periodo: economico, leggero e lo si trova praticamente in ogni cortile." },
+9:{ name:"DVD Player", description:"Il DVD Player arriva alla fine degli anni ’90 ed è prodotto da aziende come Sony. Sostituisce gradualmente VHS e videocassette, portando immagini digitali più nitide e navigazione nei menu dei film. Diventa uno dei simboli della transizione verso l’intrattenimento domestico moderno" },
+10:{ name:"Casio F91W", description:"Il Casio F-91W è un orologio digitale lanciato nel 1989 da Casio. Economico e leggero, è diventato un’icona degli anni ’90 grazie alla sua modernità e semplicità di utilizzo. Ancora oggi è uno degli orologi più venduti e riconoscibili al mondo." }
+};
+
+/* MARKER */
+document.querySelectorAll('a-marker').forEach(marker => {
+
+    marker.addEventListener('markerFound', () => {
+        currentObject = marker.querySelector('a-entity');
+
+        const value = marker.getAttribute('value');
+        const data = descriptions[value];
+
+        if (data) {
+            document.getElementById('object-name').textContent = data.name;
+            document.getElementById('object-description').textContent = data.description;
+        }
+    });
+
+    marker.addEventListener('markerLost', () => {
+        currentObject = null;
+    });
+
+});
+
+/* INFO */
+infoBtn.addEventListener('click', () => {
+    infoVisible = !infoVisible;
+    document.getElementById('info-panel').style.display =
+        infoVisible ? 'block' : 'none';
+});
+
+/* PHOTO FIX */
+
+let photoIndex = 0;
+
+function applyKodakLook(ctx, w, h) {
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+        const n = (Math.random() - 0.5) * 10;
+
+        d[i]     += n;
+        d[i + 1] += n * 0.8;
+        d[i + 2] += n * 0.6;
+    }
+
+    ctx.putImageData(img, 0, 0);
+
+    const vignette = ctx.createRadialGradient(
+        w/2, h/2, h/3,
+        w/2, h/2, h
+    );
+
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.55)");
+
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, w, h);
+}
+
+photoBtn.addEventListener('click', () => {
+    const shutter = document.getElementById('shutter-sound');
+    // 🔊 SUONO IMMEDIATO
+    if (shutter) {
+        shutter.currentTime = 0;
+        shutter.play();
+    }
+
+const flash = document.createElement('div');
+flash.style.position = "fixed";
+flash.style.inset = "0";
+flash.style.background = "white";
+flash.style.opacity = "0.9";
+flash.style.zIndex = "99999";
+flash.style.pointerEvents = "none";
+flash.style.transition = "opacity 80ms linear";
+
+document.body.appendChild(flash);
+
+requestAnimationFrame(() => {
+    flash.style.opacity = "0";
+});
+
+setTimeout(() => flash.remove(), 100);
+    
+    const video = document.querySelector('video');
+    const sceneEl = document.querySelector('a-scene');
+    const arCanvas = sceneEl?.canvas;
+
+    if (!video || !arCanvas) return;
+
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2,'0');
+    const month = String(now.getMonth()+1).padStart(2,'0');
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+
+            // 🔥 UP SCALE 2X (QUALITÀ HD)
+            const scale = 2;
+
+            const w = video.videoWidth * scale;
+            const h = video.videoHeight * scale;
+
+            const final = document.createElement('canvas');
+            final.width = w;
+            final.height = h;
+
+            const ctx = final.getContext('2d');
+
+            // migliora nitidezza
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+
+            // 1️⃣ CAMERA
+            ctx.drawImage(video, 0, 0, w, h);
+
+            // 2️⃣ AR overlay (stessa scala)
+            const arW = arCanvas.width;
+const arH = arCanvas.height;
+
+const videoRatio = w / h;
+const arRatio = arW / arH;
+
+let drawW, drawH;
+
+if (arRatio > videoRatio) {
+    drawW = w;
+    drawH = w / arRatio;
+} else {
+    drawH = h;
+    drawW = h * arRatio;
+}
+
+const offsetX = (w - drawW) / 2;
+const offsetY = (h - drawH) / 2;
+
+ctx.drawImage(arCanvas, offsetX, offsetY, drawW, drawH);
+
+            // 3️⃣ KODAK LOOK
+            applyKodakLook(ctx, w, h);
+
+            // 4️⃣ TESTO 90s
+            ctx.fillStyle = "yellow";
+            ctx.font = `${40 * scale}px monospace`;
+            ctx.fillText("90sMOOD", 30 * scale, h - 80 * scale);
+            ctx.fillText(`${day}/${month}/1996`, 30 * scale, h - 30 * scale);
+
+            // 5️⃣ EXPORT
+photoIndex++;
+
+const fileName = `90sMOOD_${day}_${month}_1996_${photoIndex.toString().padStart(4,'0')}.png`;
+
+const link = document.createElement('a');
+link.download = fileName;
+link.href = final.toDataURL('image/png', 1.0);
+link.click();
+        });
+    });
+});
+
+/* ATTIVA SYSTEM */
+scene.setAttribute('spin-system','');
+
+});
+</script>
+
+</body>
+</html>
