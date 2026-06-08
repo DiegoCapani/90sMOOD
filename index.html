@@ -198,11 +198,25 @@
     left: 50%;
     transform: translateX(-50%);
     width: 120px;
-}  
+} 
+
+       #rotate-overlay{
+    position:fixed;
+    inset:0;
+    background:#000;
+    color:#0ff;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-family:monospace;
+    font-size:24px;
+    z-index:999999;
+}
        
 </style>
 </head>
 <body>
+    <div id="rotate-overlay">ROTATE DEVICE 📺</div>
 <audio id="shutter-sound" src="assets/shutter.mp3" preload="auto"></audio>
 <div id="splash-screen">
     <div class="title-container">
@@ -342,6 +356,14 @@ const photoBtn = document.getElementById('photo-btn');
     
 let currentObject = null;
 let infoVisible = false;
+
+    function check(){
+  document.getElementById("rotate-overlay").style.display =
+    window.innerHeight < window.innerWidth ? "flex" : "none";
+}
+
+window.addEventListener("resize", check);
+check();
 
 /* START AR */
 startBtn.addEventListener('click', () => {
