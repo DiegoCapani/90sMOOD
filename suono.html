@@ -604,18 +604,18 @@ body {
 
 
 <!-- =====================================================
-     OBJECT SOUNDS
+     AUDIO OGGETTI
 ===================================================== -->
 
 <audio
     id="sound-1"
-    src="assets/nokia.mp3"
+    src="assets/nokia3310.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-2"
-    src="assets/sound2.mp3"
+    src="assets/tamagotchi.mp3"
     preload="auto">
 </audio>
 
@@ -627,43 +627,43 @@ body {
 
 <audio
     id="sound-4"
-    src="assets/sound4.mp3"
+    src="assets/friends.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-5"
-    src="assets/sound5.mp3"
+    src="assets/kodak400.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-6"
-    src="assets/sound6.mp3"
+    src="assets/playstation.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-7"
-    src="assets/sound7.mp3"
+    src="assets/gameboy.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-8"
-    src="assets/sound8.mp3"
+    src="assets/supersantos.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-9"
-    src="assets/sound9.mp3"
+    src="assets/dvdplayer.mp3"
     preload="auto">
 </audio>
 
 <audio
     id="sound-10"
-    src="assets/sound10.mp3"
+    src="assets/casiof91w.mp3"
     preload="auto">
 </audio>
 
@@ -760,14 +760,16 @@ body {
     <button
         id="close-reopen"
         class="close-reopen">
+
         REOPEN
+
     </button>
 
 </div>
 
 
 <!-- =====================================================
-     A-FRAME SCENE
+     A-FRAME
 ===================================================== -->
 
 <a-scene
@@ -1172,11 +1174,48 @@ document.addEventListener(
 
     let currentSound = null;
 
+    /*
+     * Indica se l'utente ha attivato
+     * la funzione audio.
+     */
+
     let soundEnabled = false;
 
 
     /* =====================================================
+       AGGIORNA ICONA AUDIO
+       
+       L'icona rappresenta lo STATO REALE
+       della riproduzione.
+    ===================================================== */
+
+    function updateSoundIcon() {
+
+        if (
+            currentSound &&
+            !currentSound.paused &&
+            !currentSound.ended
+        ) {
+
+            soundBtn.textContent =
+                '🔊';
+
+        }
+
+        else {
+
+            soundBtn.textContent =
+                '🔇';
+
+        }
+
+    }
+
+
+    /* =====================================================
        VOLUME AUDIO OGGETTI
+       
+       20%
     ===================================================== */
 
     document
@@ -1186,7 +1225,8 @@ document.addEventListener(
         .forEach(
             sound => {
 
-                sound.volume = 0.20;
+                sound.volume =
+                    0.20;
 
             }
         );
@@ -1315,7 +1355,7 @@ document.addEventListener(
 
 
     /* =====================================================
-       AUDIO STOP
+       STOP AUDIO
     ===================================================== */
 
     function stopCurrentSound() {
@@ -1331,26 +1371,49 @@ document.addEventListener(
 
         }
 
+        /*
+         * Audio fermo =
+         * icona barrata.
+         */
+
+        updateSoundIcon();
+
     }
 
 
     /* =====================================================
-       AUDIO PLAY
+       PLAY AUDIO
     ===================================================== */
 
     function playObjectSound(
         value
     ) {
 
+        /*
+         * Prima fermiamo il precedente.
+         */
+
         stopCurrentSound();
 
 
+        /*
+         * Se l'utente non ha attivato
+         * l'audio, non facciamo nulla.
+         */
+
         if (!soundEnabled) {
+
+            updateSoundIcon();
 
             return;
 
         }
 
+
+        /*
+         * Recuperiamo il file relativo
+         * al marker.
+         */
 
         const sound =
             document.getElementById(
@@ -1365,6 +1428,8 @@ document.addEventListener(
                 value
             );
 
+            updateSoundIcon();
+
             return;
 
         }
@@ -1374,15 +1439,48 @@ document.addEventListener(
             sound;
 
 
-        /* VOLUME 20% */
+        /*
+         * VOLUME 20%
+         */
 
         sound.volume =
             0.20;
 
 
+        /*
+         * Riparte dall'inizio.
+         */
+
         sound.currentTime =
             0;
 
+
+        /*
+         * Quando il file finisce
+         * l'icona torna barrata.
+         */
+
+        sound.onended =
+            () => {
+
+                if (
+                    currentSound ===
+                    sound
+                ) {
+
+                    currentSound =
+                        null;
+
+                    updateSoundIcon();
+
+                }
+
+            };
+
+
+        /*
+         * Avvio audio.
+         */
 
         const playPromise =
             sound.play();
@@ -1393,16 +1491,45 @@ document.addEventListener(
             undefined
         ) {
 
-            playPromise.catch(
-                error => {
+            playPromise
+                .then(
+                    () => {
 
-                    console.log(
-                        "Audio non riprodotto:",
-                        error
-                    );
+                        /*
+                         * Audio realmente partito.
+                         */
 
-                }
-            );
+                        updateSoundIcon();
+
+                    }
+                )
+                .catch(
+                    error => {
+
+                        /*
+                         * Se il browser blocca
+                         * la riproduzione,
+                         * l'icona resta 🔇.
+                         */
+
+                        currentSound =
+                            null;
+
+                        updateSoundIcon();
+
+                        console.log(
+                            "Audio non riprodotto:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+
+        else {
+
+            updateSoundIcon();
 
         }
 
@@ -1422,7 +1549,7 @@ document.addEventListener(
 
 
             /* ---------------------------------------------
-               FOUND
+               MARKER FOUND
             --------------------------------------------- */
 
             marker.addEventListener(
@@ -1471,6 +1598,11 @@ document.addEventListener(
                     }
 
 
+                    /*
+                     * Se audio attivo,
+                     * parte quello del nuovo oggetto.
+                     */
+
                     if (
                         soundEnabled
                     ) {
@@ -1481,12 +1613,18 @@ document.addEventListener(
 
                     }
 
+                    else {
+
+                        updateSoundIcon();
+
+                    }
+
                 }
             );
 
 
             /* ---------------------------------------------
-               LOST
+               MARKER LOST
             --------------------------------------------- */
 
             marker.addEventListener(
@@ -1499,12 +1637,122 @@ document.addEventListener(
                     currentMarkerValue =
                         null;
 
+
+                    /*
+                     * Fermiamo il suono.
+                     */
+
                     stopCurrentSound();
 
                 }
             );
 
         });
+
+
+    /* =====================================================
+       SOUND BUTTON
+    ===================================================== */
+
+    soundBtn.addEventListener(
+        'click',
+        () => {
+
+
+            /*
+             * Se l'audio sta effettivamente
+             * suonando, lo spegniamo.
+             */
+
+            if (
+                currentSound &&
+                !currentSound.paused
+            ) {
+
+                soundEnabled =
+                    false;
+
+                stopCurrentSound();
+
+                return;
+
+            }
+
+
+            /*
+             * Altrimenti abilitiamo
+             * la funzione audio.
+             */
+
+            soundEnabled =
+                true;
+
+
+            /*
+             * Cerchiamo il marker
+             * attualmente visibile.
+             */
+
+            const markers =
+                document.querySelectorAll(
+                    'a-marker'
+                );
+
+
+            let foundValue =
+                null;
+
+
+            markers.forEach(
+                marker => {
+
+                    if (
+                        marker.object3D.visible
+                    ) {
+
+                        foundValue =
+                            marker.getAttribute(
+                                'value'
+                            );
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Se esiste un marker,
+             * parte il relativo audio.
+             */
+
+            if (
+                foundValue
+            ) {
+
+                currentMarkerValue =
+                    foundValue;
+
+                playObjectSound(
+                    foundValue
+                );
+
+            }
+
+            else {
+
+                /*
+                 * Nessun marker =
+                 * nessun audio =
+                 * icona barrata.
+                 */
+
+                updateSoundIcon();
+
+            }
+
+        }
+    );
 
 
     /* =====================================================
@@ -1528,83 +1776,6 @@ document.addEventListener(
                     infoVisible
                         ? 'block'
                         : 'none';
-
-        }
-    );
-
-
-    /* =====================================================
-       SOUND BUTTON
-    ===================================================== */
-
-    soundBtn.addEventListener(
-        'click',
-        () => {
-
-            soundEnabled =
-                !soundEnabled;
-
-
-            if (
-                soundEnabled
-            ) {
-
-                soundBtn.textContent =
-                    '🔊';
-
-
-                const markers =
-                    document.querySelectorAll(
-                        'a-marker'
-                    );
-
-
-                let foundValue =
-                    null;
-
-
-                markers.forEach(
-                    marker => {
-
-                        if (
-                            marker.object3D.visible
-                        ) {
-
-                            foundValue =
-                                marker.getAttribute(
-                                    'value'
-                                );
-
-                        }
-
-                    }
-                );
-
-
-                if (
-                    foundValue
-                ) {
-
-                    currentMarkerValue =
-                        foundValue;
-
-                    playObjectSound(
-                        foundValue
-                    );
-
-                }
-
-            }
-
-
-            else {
-
-                soundBtn.textContent =
-                    '🔇';
-
-                stopCurrentSound();
-
-            }
 
         }
     );
@@ -1716,6 +1887,10 @@ document.addEventListener(
                     'shutter-sound'
                 );
 
+
+            /*
+             * SHUTTER ORIGINALE
+             */
 
             if (shutter) {
 
@@ -1878,7 +2053,9 @@ document.addEventListener(
                                 "high";
 
 
-                            /* CAMERA */
+                            /*
+                             * CAMERA
+                             */
 
                             ctx.drawImage(
                                 video,
@@ -1889,7 +2066,9 @@ document.addEventListener(
                             );
 
 
-                            /* AR */
+                            /*
+                             * AR
+                             */
 
                             const arW =
                                 arCanvas.width;
@@ -1957,7 +2136,9 @@ document.addEventListener(
                             );
 
 
-                            /* KODAK */
+                            /*
+                             * KODAK
+                             */
 
                             applyKodakLook(
                                 ctx,
@@ -1966,7 +2147,9 @@ document.addEventListener(
                             );
 
 
-                            /* TEXT */
+                            /*
+                             * TESTO
+                             */
 
                             ctx.fillStyle =
                                 "yellow";
@@ -1990,7 +2173,9 @@ document.addEventListener(
                             );
 
 
-                            /* FILE */
+                            /*
+                             * FILE
+                             */
 
                             photoIndex++;
 
@@ -2043,11 +2228,10 @@ document.addEventListener(
 
 
             /*
-             * 1. FERMA AUDIO
+             * FERMA AUDIO
              */
 
             stopCurrentSound();
-
 
             soundEnabled =
                 false;
@@ -2058,7 +2242,7 @@ document.addEventListener(
 
 
             /*
-             * 2. FERMA SHUTTER
+             * FERMA SHUTTER
              */
 
             const shutter =
@@ -2078,7 +2262,7 @@ document.addEventListener(
 
 
             /*
-             * 3. NASCONDE INFO
+             * NASCONDE INFO
              */
 
             document
@@ -2091,7 +2275,7 @@ document.addEventListener(
 
 
             /*
-             * 4. FERMA SCENA AR
+             * FERMA AR
              */
 
             try {
@@ -2111,7 +2295,7 @@ document.addEventListener(
 
 
             /*
-             * 5. PROVA A CHIUDERE
+             * PROVA A CHIUDERE
              */
 
             try {
@@ -2131,11 +2315,7 @@ document.addEventListener(
 
 
             /*
-             * 6. FALLBACK
-             *
-             * Se il browser non permette
-             * window.close(), mostriamo
-             * la schermata di chiusura.
+             * FALLBACK
              */
 
             setTimeout(
@@ -2164,10 +2344,6 @@ document.addEventListener(
                 'none';
 
 
-            /*
-             * Riattiva la scena
-             */
-
             try {
 
                 scene.play();
@@ -2186,6 +2362,14 @@ document.addEventListener(
 
             soundEnabled =
                 false;
+
+
+            currentSound =
+                null;
+
+
+            currentMarkerValue =
+                null;
 
 
             soundBtn.textContent =
