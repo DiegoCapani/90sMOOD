@@ -1,1 +1,2221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
 
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no"
+>
+
+<title>90sMOOD</title>
+
+<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+
+<style>
+
+/* =========================================================
+   BASE
+========================================================= */
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    font-family: monospace;
+
+}
+
+
+/* =========================================================
+   SPLASH SCREEN
+========================================================= */
+
+#splash-screen {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #af9cff 0%,
+            #1a0033 40%,
+            #000000 80%
+        );
+
+    z-index: 9999;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+}
+
+
+/* =========================================================
+   CRT EFFECT
+========================================================= */
+
+#splash-screen::before {
+
+    content: " ";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+        );
+
+    background-size:
+        100% 4px,
+        6px 100%;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.title-container {
+
+    text-align: center;
+
+    margin-bottom: 50px;
+
+    transform:
+        skewX(-10deg);
+
+}
+
+
+.title-main {
+
+    font-size: 48px;
+
+    font-weight: 900;
+
+    color: #00ffff;
+
+    letter-spacing: 4px;
+
+    text-shadow:
+        3px 3px 0px #ff00ff,
+        6px 6px 0px #000;
+
+    margin: 0;
+
+}
+
+
+.title-sub {
+
+    font-size: 18px;
+
+    color: #ffff00;
+
+    margin-top: 10px;
+
+    text-shadow:
+        2px 2px 0px #ff0000;
+
+}
+
+
+/* =========================================================
+   START BUTTON
+========================================================= */
+
+#start-btn {
+
+    padding:
+        15px 40px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    color: #fff;
+
+    background: #00ff00;
+
+    border: 4px solid #fff;
+
+    box-shadow:
+        5px 5px 0px #ff00ff;
+
+    cursor: pointer;
+
+    text-transform: uppercase;
+
+}
+
+
+#start-btn:active {
+
+    transform:
+        translate(4px, 4px);
+
+    box-shadow:
+        1px 1px 0px #ff00ff;
+
+}
+
+
+/* =========================================================
+   LOADING TEXT
+========================================================= */
+
+.loading-text {
+
+    color: #fff;
+
+    margin-top: 30px;
+
+    font-size: 12px;
+
+    animation:
+        blink 1s infinite;
+
+}
+
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+#footer-ui {
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.6s ease;
+
+    position: fixed;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+
+    gap: 12px;
+
+    z-index: 9999;
+
+}
+
+
+#footer-ui.show {
+
+    opacity: 1;
+
+    pointer-events: auto;
+
+}
+
+
+/* =========================================================
+   FOOTER BUTTONS
+========================================================= */
+
+#footer-ui button {
+
+    background:
+        linear-gradient(
+            180deg,
+            #111 0%,
+            #000 100%
+        );
+
+    color: #00ffff;
+
+    border:
+        3px solid #ff00ff;
+
+    padding:
+        12px 16px;
+
+    font-family: monospace;
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    text-transform: uppercase;
+
+    box-shadow:
+        3px 3px 0px #00ffff,
+        6px 6px 0px #000;
+
+    cursor: pointer;
+
+    transition:
+        all 0.1s ease;
+
+}
+
+
+#footer-ui button:active {
+
+    transform:
+        translate(3px, 3px);
+
+    box-shadow:
+        1px 1px 0px #00ffff;
+
+}
+
+
+/* =========================================================
+   INFO PANEL
+========================================================= */
+
+#info-panel {
+
+    position: fixed;
+
+    left: 20px;
+    right: 20px;
+
+    bottom: 90px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #000 0%,
+            #111 100%
+        );
+
+    color: #00ffff;
+
+    padding: 18px;
+
+    border:
+        3px solid #ff00ff;
+
+    display: none;
+
+    z-index: 9999;
+
+    box-shadow:
+        5px 5px 0px #00ffff,
+        10px 10px 0px #000;
+
+}
+
+
+#info-panel h2 {
+
+    margin:
+        0 0 8px 0;
+
+    color: #ff00ff;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.splash-logo {
+
+    pointer-events: none;
+
+    position: absolute;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 120px;
+
+}
+
+
+/* =========================================================
+   ROTATE OVERLAY
+========================================================= */
+
+#rotate-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #000;
+
+    color: #0ff;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-family: monospace;
+
+    font-size: 24px;
+
+    z-index: 999999;
+
+}
+
+
+/* =========================================================
+   CLOSE SCREEN
+========================================================= */
+
+#close-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #1a0033 0%,
+            #000000 70%
+        );
+
+    z-index: 1000000;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    color: #00ffff;
+
+}
+
+
+#close-screen::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.30) 50%
+        );
+
+    background-size:
+        100% 4px;
+
+    pointer-events: none;
+
+}
+
+
+.close-title {
+
+    font-size: 42px;
+
+    font-weight: 900;
+
+    letter-spacing: 4px;
+
+    color: #00ffff;
+
+    text-shadow:
+        3px 3px 0px #ff00ff,
+        6px 6px 0px #000;
+
+    transform:
+        skewX(-10deg);
+
+}
+
+
+.close-sub {
+
+    margin-top: 15px;
+
+    color: #ffff00;
+
+    font-size: 14px;
+
+}
+
+
+.close-reopen {
+
+    margin-top: 40px;
+
+    padding:
+        12px 20px;
+
+    background: #000;
+
+    color: #00ffff;
+
+    border:
+        3px solid #ff00ff;
+
+    font-family: monospace;
+
+    font-weight: bold;
+
+    box-shadow:
+        3px 3px 0px #00ffff;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .title-main {
+
+        font-size: 42px;
+
+    }
+
+    #footer-ui {
+
+        gap: 8px;
+
+    }
+
+    #footer-ui button {
+
+        padding:
+            10px 13px;
+
+        font-size: 13px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ROTATE
+===================================================== -->
+
+<div id="rotate-overlay">
+    ROTATE DEVICE📱
+</div>
+
+
+<!-- =====================================================
+     SHUTTER
+===================================================== -->
+
+<audio
+    id="shutter-sound"
+    src="assets/shutter.mp3"
+    preload="auto">
+</audio>
+
+
+<!-- =====================================================
+     OBJECT SOUNDS
+===================================================== -->
+
+<audio
+    id="sound-1"
+    src="assets/sound1.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-2"
+    src="assets/sound2.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-3"
+    src="assets/sound3.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-4"
+    src="assets/sound4.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-5"
+    src="assets/sound5.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-6"
+    src="assets/sound6.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-7"
+    src="assets/sound7.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-8"
+    src="assets/sound8.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-9"
+    src="assets/sound9.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="sound-10"
+    src="assets/sound10.mp3"
+    preload="auto">
+</audio>
+
+
+<!-- =====================================================
+     SPLASH
+===================================================== -->
+
+<div id="splash-screen">
+
+    <div class="title-container">
+
+        <h1 class="title-main">
+            90sMOOD
+        </h1>
+
+        <div class="title-sub">
+            by Diego Capani
+        </div>
+
+    </div>
+
+
+    <button id="start-btn">
+        REMEMBER NOW!
+    </button>
+
+
+    <div class="loading-text">
+        TOUCH TO PLAY...
+    </div>
+
+
+    <img
+        src="assets/logonotte.jpg"
+        class="splash-logo"
+        alt="logo">
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<div id="footer-ui">
+
+    <button id="info-btn">
+        📋
+    </button>
+
+    <button id="photo-btn">
+        📸
+    </button>
+
+    <button id="sound-btn">
+        🔇
+    </button>
+
+    <button id="close-btn">
+        ✕
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     INFO
+===================================================== -->
+
+<div id="info-panel">
+
+    <h2 id="object-name"></h2>
+
+    <p id="object-description"></p>
+
+</div>
+
+
+<!-- =====================================================
+     CLOSE SCREEN
+===================================================== -->
+
+<div id="close-screen">
+
+    <div class="close-title">
+        90sMOOD
+    </div>
+
+    <div class="close-sub">
+        SESSION ENDED
+    </div>
+
+    <button
+        id="close-reopen"
+        class="close-reopen">
+        REOPEN
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     A-FRAME SCENE
+===================================================== -->
+
+<a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true"
+    arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
+
+
+    <!-- =================================================
+         ASSETS
+    ================================================== -->
+
+    <a-assets>
+
+        <a-asset-item
+            id="modello-1"
+            src="assets/nokia3310.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-2"
+            src="assets/tamagotchi.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-3"
+            src="assets/discman.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-4"
+            src="assets/locandina.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-5"
+            src="assets/kodak400.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-6"
+            src="assets/playstation.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-7"
+            src="assets/gameboy.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-8"
+            src="assets/supersantos.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-9"
+            src="assets/dvdplayer.glb">
+        </a-asset-item>
+
+        <a-asset-item
+            id="modello-10"
+            src="assets/casiof91w.glb">
+        </a-asset-item>
+
+    </a-assets>
+
+
+    <!-- =================================================
+         MARKER 1
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="1">
+
+        <a-entity
+            gltf-model="#modello-1"
+            scale="0.02 0.02 0.02"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.20 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 2
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="2">
+
+        <a-entity
+            gltf-model="#modello-2"
+            scale="3 3 3"
+            position="0 0.3 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.4 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 3
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="3">
+
+        <a-entity
+            gltf-model="#modello-3"
+            scale="0.2 0.2 0.2"
+            position="0 0 0"
+            rotation="-90 90 -90">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="8"
+            height="8"
+            position="0 0 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 4
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="4">
+
+        <a-entity
+            gltf-model="#modello-4"
+            scale="3 3 3"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="8"
+            height="8"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 5
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="5">
+
+        <a-entity
+            gltf-model="#modello-5"
+            scale="0.5 0.5 0.5"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 6
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="6">
+
+        <a-entity
+            gltf-model="#modello-6"
+            scale="6 6 6"
+            position="0 0 0"
+            rotation="-60 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 7
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="7">
+
+        <a-entity
+            gltf-model="#modello-7"
+            scale="5 5 5"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 0 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 8
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="8">
+
+        <a-entity
+            gltf-model="#modello-8"
+            scale="7 7 7"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 9
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="9">
+
+        <a-entity
+            gltf-model="#modello-9"
+            scale="2 2 2"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- =================================================
+         MARKER 10
+    ================================================== -->
+
+    <a-marker
+        type="barcode"
+        value="10">
+
+        <a-entity
+            gltf-model="#modello-10"
+            scale="0.3 0.3 0.3"
+            position="0 0 0"
+            rotation="-90 0 0">
+        </a-entity>
+
+        <a-plane
+            rotation="-90 0 0"
+            width="4"
+            height="4"
+            position="0 -0.8 0"
+            material="src: assets/ombra.png; transparent: true; opacity: 0.6">
+        </a-plane>
+
+    </a-marker>
+
+
+    <!-- CAMERA -->
+
+    <a-entity camera></a-entity>
+
+</a-scene>
+
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+
+    /* =====================================================
+       ELEMENTI
+    ===================================================== */
+
+    const startBtn =
+        document.getElementById(
+            'start-btn'
+        );
+
+    const splash =
+        document.getElementById(
+            'splash-screen'
+        );
+
+    const scene =
+        document.querySelector(
+            'a-scene'
+        );
+
+    const infoBtn =
+        document.getElementById(
+            'info-btn'
+        );
+
+    const photoBtn =
+        document.getElementById(
+            'photo-btn'
+        );
+
+    const soundBtn =
+        document.getElementById(
+            'sound-btn'
+        );
+
+    const closeBtn =
+        document.getElementById(
+            'close-btn'
+        );
+
+    const closeScreen =
+        document.getElementById(
+            'close-screen'
+        );
+
+    const reopenBtn =
+        document.getElementById(
+            'close-reopen'
+        );
+
+
+    /* =====================================================
+       VARIABILI
+    ===================================================== */
+
+    let currentObject = null;
+
+    let infoVisible = false;
+
+    let currentMarkerValue = null;
+
+    let currentSound = null;
+
+    let soundEnabled = false;
+
+
+    /* =====================================================
+       VOLUME AUDIO OGGETTI
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            'audio[id^="sound-"]'
+        )
+        .forEach(
+            sound => {
+
+                sound.volume = 0.20;
+
+            }
+        );
+
+
+    /* =====================================================
+       ROTAZIONE DEVICE
+    ===================================================== */
+
+    function check() {
+
+        document
+            .getElementById(
+                "rotate-overlay"
+            )
+            .style
+            .display =
+                window.innerHeight <
+                window.innerWidth
+                    ? "flex"
+                    : "none";
+
+    }
+
+
+    window.addEventListener(
+        "resize",
+        check
+    );
+
+
+    check();
+
+
+    /* =====================================================
+       START AR
+    ===================================================== */
+
+    startBtn.addEventListener(
+        'click',
+        () => {
+
+            scene?.play();
+
+            splash.style.opacity =
+                '0';
+
+            document
+                .getElementById(
+                    'footer-ui'
+                )
+                .classList
+                .add('show');
+
+            setTimeout(
+                () => {
+
+                    splash.style.display =
+                        'none';
+
+                },
+                500
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       DESCRIZIONI
+    ===================================================== */
+
+    const descriptions = {
+
+        1: {
+            name: "Nokia 3310",
+            description: "Grazie alla sua semplicità, affidabilità e alla leggendaria indistruttibilità, il Nokia 3310 conquistò milioni di utenti in tutto il mondo, raggiungendo circa 126 milioni di unità vendute, un risultato che lo rende ancora oggi uno dei cellulari più venduti di sempre."
+        },
+
+        2: {
+            name: "Tamagotchi",
+            description: "Lanciato nel 1996 dalla Bandai, il Tamagotchi è uno dei giochi elettronici più iconici di sempre. Questo piccolo dispositivo permetteva di accudire un animaletto virtuale, nutrendolo e curandolo giorno dopo giorno. Grazie al forte coinvolgimento emotivo, ha conquistato milioni di bambini e ragazzi in tutto il mondo, superando 90 milioni di unità vendute."
+        },
+
+        3: {
+            name: "Discman",
+            description: "Il Discman della Sony è il lettore CD portatile pr eccellenza. Permetteva di ascoltare musica su CD in mobilità, ma soffriva di salti del disco con i movimenti. È diventato un’icona degli anni ’90, simbolo del passaggio dal nastro magnetico al supporto digitale."
+        },
+
+        4: {
+            name: "Friends",
+            description: "Sitcom cult degli anni '90 in cui sei giovani amici affrontano le sfide sentimentali, lavorative e quotidiane nella New York di fine millennio, riuniti attorno al divano della Caffetteria Central Perk. La serie ha avuto un enorme successo mondiale ed è diventata uno dei simboli della cultura pop televisiva, lanciando la carriera del suo cast corale."
+        },
+
+        5: {
+            name: "Kodak 400",
+            description: "La Kodak ISO 400 è una pellicola a colori pensata per offrire maggiore versatilità in condizioni di luce variabile. Negli anni ’90 diventa molto diffusa tra amatori e famiglie grazie alla sua praticità e all’uso nelle fotocamere compatte."
+        },
+
+        6: {
+            name: "PlayStation",
+            description: "La PlayStation è una console per videogiochi lanciata nel 1994 da Sony. Ha segnato l’inizio del gaming moderno su CD-ROM, portando grafica 3D e titoli iconici nelle case di milioni di giocatori. È diventata una delle console più influenti e vendute della storia dei videogiochi."
+        },
+
+        7: {
+            name: "Game Boy",
+            description: "Il Game Boy è una console portatile lanciata nel 1989 da Nintendo. Ha reso il gaming portatile un fenomeno di massa grazie a titoli come Tetris e alla sua grande autonomia. È diventato una delle console più iconiche e vendute della storia."
+        },
+
+        8: {
+            name: "Supersantos",
+            description: "Il Super Santos è il celebre pallone leggero in plastica morbida prodotto da Mondo. Negli anni ’90 però diventa popolare, perché è il pallone tipico dei giochi di strada di quel periodo: economico, leggero e lo si trova praticamente in ogni cortile."
+        },
+
+        9: {
+            name: "DVD Player",
+            description: "Il DVD Player arriva alla fine degli anni ’90 ed è prodotto da aziende come Sony. Sostituisce gradualmente VHS e videocassette, portando immagini digitali più nitide e navigazione nei menu dei film. Diventa uno dei simboli della transizione verso l’intrattenimento domestico moderno."
+        },
+
+        10: {
+            name: "Casio F91W",
+            description: "Il Casio F-91W è un orologio digitale lanciato nel 1989 da Casio. Economico e leggero, è diventato un’icona degli anni ’90 grazie alla sua modernità e semplicità di utilizzo. Ancora oggi è uno degli orologi più venduti e riconoscibili al mondo."
+        }
+
+    };
+
+
+    /* =====================================================
+       AUDIO STOP
+    ===================================================== */
+
+    function stopCurrentSound() {
+
+        if (currentSound) {
+
+            currentSound.pause();
+
+            currentSound.currentTime =
+                0;
+
+            currentSound = null;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       AUDIO PLAY
+    ===================================================== */
+
+    function playObjectSound(
+        value
+    ) {
+
+        stopCurrentSound();
+
+
+        if (!soundEnabled) {
+
+            return;
+
+        }
+
+
+        const sound =
+            document.getElementById(
+                `sound-${value}`
+            );
+
+
+        if (!sound) {
+
+            console.log(
+                "Audio non trovato per marker:",
+                value
+            );
+
+            return;
+
+        }
+
+
+        currentSound =
+            sound;
+
+
+        /* VOLUME 20% */
+
+        sound.volume =
+            0.20;
+
+
+        sound.currentTime =
+            0;
+
+
+        const playPromise =
+            sound.play();
+
+
+        if (
+            playPromise !==
+            undefined
+        ) {
+
+            playPromise.catch(
+                error => {
+
+                    console.log(
+                        "Audio non riprodotto:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MARKER
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            'a-marker'
+        )
+        .forEach(
+            marker => {
+
+
+            /* ---------------------------------------------
+               FOUND
+            --------------------------------------------- */
+
+            marker.addEventListener(
+                'markerFound',
+                () => {
+
+                    currentObject =
+                        marker.querySelector(
+                            'a-entity'
+                        );
+
+
+                    const value =
+                        marker.getAttribute(
+                            'value'
+                        );
+
+
+                    currentMarkerValue =
+                        value;
+
+
+                    const data =
+                        descriptions[
+                            value
+                        ];
+
+
+                    if (data) {
+
+                        document
+                            .getElementById(
+                                'object-name'
+                            )
+                            .textContent =
+                            data.name;
+
+
+                        document
+                            .getElementById(
+                                'object-description'
+                            )
+                            .textContent =
+                            data.description;
+
+                    }
+
+
+                    if (
+                        soundEnabled
+                    ) {
+
+                        playObjectSound(
+                            value
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* ---------------------------------------------
+               LOST
+            --------------------------------------------- */
+
+            marker.addEventListener(
+                'markerLost',
+                () => {
+
+                    currentObject =
+                        null;
+
+                    currentMarkerValue =
+                        null;
+
+                    stopCurrentSound();
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       INFO
+    ===================================================== */
+
+    infoBtn.addEventListener(
+        'click',
+        () => {
+
+            infoVisible =
+                !infoVisible;
+
+
+            document
+                .getElementById(
+                    'info-panel'
+                )
+                .style
+                .display =
+                    infoVisible
+                        ? 'block'
+                        : 'none';
+
+        }
+    );
+
+
+    /* =====================================================
+       SOUND BUTTON
+    ===================================================== */
+
+    soundBtn.addEventListener(
+        'click',
+        () => {
+
+            soundEnabled =
+                !soundEnabled;
+
+
+            if (
+                soundEnabled
+            ) {
+
+                soundBtn.textContent =
+                    '🔊';
+
+
+                const markers =
+                    document.querySelectorAll(
+                        'a-marker'
+                    );
+
+
+                let foundValue =
+                    null;
+
+
+                markers.forEach(
+                    marker => {
+
+                        if (
+                            marker.object3D.visible
+                        ) {
+
+                            foundValue =
+                                marker.getAttribute(
+                                    'value'
+                                );
+
+                        }
+
+                    }
+                );
+
+
+                if (
+                    foundValue
+                ) {
+
+                    currentMarkerValue =
+                        foundValue;
+
+                    playObjectSound(
+                        foundValue
+                    );
+
+                }
+
+            }
+
+
+            else {
+
+                soundBtn.textContent =
+                    '🔇';
+
+                stopCurrentSound();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       PHOTO
+    ===================================================== */
+
+    let photoIndex = 0;
+
+
+    function applyKodakLook(
+        ctx,
+        w,
+        h
+    ) {
+
+        const img =
+            ctx.getImageData(
+                0,
+                0,
+                w,
+                h
+            );
+
+
+        const d =
+            img.data;
+
+
+        for (
+            let i = 0;
+            i < d.length;
+            i += 4
+        ) {
+
+            const n =
+                (Math.random() - 0.5)
+                * 10;
+
+
+            d[i] += n;
+
+            d[i + 1] +=
+                n * 0.8;
+
+            d[i + 2] +=
+                n * 0.6;
+
+        }
+
+
+        ctx.putImageData(
+            img,
+            0,
+            0
+        );
+
+
+        const vignette =
+            ctx.createRadialGradient(
+                w / 2,
+                h / 2,
+                h / 3,
+                w / 2,
+                h / 2,
+                h
+            );
+
+
+        vignette.addColorStop(
+            0,
+            "rgba(0,0,0,0)"
+        );
+
+
+        vignette.addColorStop(
+            1,
+            "rgba(0,0,0,0.55)"
+        );
+
+
+        ctx.fillStyle =
+            vignette;
+
+
+        ctx.fillRect(
+            0,
+            0,
+            w,
+            h
+        );
+
+    }
+
+
+    /* =====================================================
+       PHOTO BUTTON
+    ===================================================== */
+
+    photoBtn.addEventListener(
+        'click',
+        () => {
+
+
+            const shutter =
+                document.getElementById(
+                    'shutter-sound'
+                );
+
+
+            if (shutter) {
+
+                shutter.currentTime =
+                    0;
+
+                shutter.play();
+
+            }
+
+
+            /* FLASH */
+
+            const flash =
+                document.createElement(
+                    'div'
+                );
+
+
+            flash.style.position =
+                "fixed";
+
+            flash.style.inset =
+                "0";
+
+            flash.style.background =
+                "white";
+
+            flash.style.opacity =
+                "0.9";
+
+            flash.style.zIndex =
+                "99999";
+
+            flash.style.pointerEvents =
+                "none";
+
+            flash.style.transition =
+                "opacity 80ms linear";
+
+
+            document.body.appendChild(
+                flash
+            );
+
+
+            requestAnimationFrame(
+                () => {
+
+                    flash.style.opacity =
+                        "0";
+
+                }
+            );
+
+
+            setTimeout(
+                () => {
+
+                    flash.remove();
+
+                },
+                100
+            );
+
+
+            const video =
+                document.querySelector(
+                    'video'
+                );
+
+
+            const sceneEl =
+                document.querySelector(
+                    'a-scene'
+                );
+
+
+            const arCanvas =
+                sceneEl?.canvas;
+
+
+            if (
+                !video ||
+                !arCanvas
+            ) {
+
+                return;
+
+            }
+
+
+            const now =
+                new Date();
+
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            requestAnimationFrame(
+                () => {
+
+                    requestAnimationFrame(
+                        () => {
+
+
+                            const scale =
+                                2;
+
+
+                            const w =
+                                video.videoWidth *
+                                scale;
+
+
+                            const h =
+                                video.videoHeight *
+                                scale;
+
+
+                            const final =
+                                document.createElement(
+                                    'canvas'
+                                );
+
+
+                            final.width =
+                                w;
+
+                            final.height =
+                                h;
+
+
+                            const ctx =
+                                final.getContext(
+                                    '2d'
+                                );
+
+
+                            ctx.imageSmoothingEnabled =
+                                true;
+
+
+                            ctx.imageSmoothingQuality =
+                                "high";
+
+
+                            /* CAMERA */
+
+                            ctx.drawImage(
+                                video,
+                                0,
+                                0,
+                                w,
+                                h
+                            );
+
+
+                            /* AR */
+
+                            const arW =
+                                arCanvas.width;
+
+
+                            const arH =
+                                arCanvas.height;
+
+
+                            const videoRatio =
+                                w / h;
+
+
+                            const arRatio =
+                                arW / arH;
+
+
+                            let drawW;
+
+                            let drawH;
+
+
+                            if (
+                                arRatio >
+                                videoRatio
+                            ) {
+
+                                drawW =
+                                    w;
+
+                                drawH =
+                                    w /
+                                    arRatio;
+
+                            }
+
+                            else {
+
+                                drawH =
+                                    h;
+
+                                drawW =
+                                    h *
+                                    arRatio;
+
+                            }
+
+
+                            const offsetX =
+                                (w - drawW) /
+                                2;
+
+
+                            const offsetY =
+                                (h - drawH) /
+                                2;
+
+
+                            ctx.drawImage(
+                                arCanvas,
+                                offsetX,
+                                offsetY,
+                                drawW,
+                                drawH
+                            );
+
+
+                            /* KODAK */
+
+                            applyKodakLook(
+                                ctx,
+                                w,
+                                h
+                            );
+
+
+                            /* TEXT */
+
+                            ctx.fillStyle =
+                                "yellow";
+
+
+                            ctx.font =
+                                `${40 * scale}px monospace`;
+
+
+                            ctx.fillText(
+                                "90sMOOD",
+                                30 * scale,
+                                h - 80 * scale
+                            );
+
+
+                            ctx.fillText(
+                                `${day}/${month}/1996`,
+                                30 * scale,
+                                h - 30 * scale
+                            );
+
+
+                            /* FILE */
+
+                            photoIndex++;
+
+
+                            const fileName =
+                                `90sMOOD_${day}_${month}_1996_${photoIndex
+                                    .toString()
+                                    .padStart(
+                                        4,
+                                        '0'
+                                    )}.png`;
+
+
+                            const link =
+                                document.createElement(
+                                    'a'
+                                );
+
+
+                            link.download =
+                                fileName;
+
+
+                            link.href =
+                                final.toDataURL(
+                                    'image/png',
+                                    1.0
+                                );
+
+
+                            link.click();
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       ✕ CHIUDI WEBAPP
+    ===================================================== */
+
+    closeBtn.addEventListener(
+        'click',
+        () => {
+
+
+            /*
+             * 1. FERMA AUDIO
+             */
+
+            stopCurrentSound();
+
+
+            soundEnabled =
+                false;
+
+
+            soundBtn.textContent =
+                '🔇';
+
+
+            /*
+             * 2. FERMA SHUTTER
+             */
+
+            const shutter =
+                document.getElementById(
+                    'shutter-sound'
+                );
+
+
+            if (shutter) {
+
+                shutter.pause();
+
+                shutter.currentTime =
+                    0;
+
+            }
+
+
+            /*
+             * 3. NASCONDE INFO
+             */
+
+            document
+                .getElementById(
+                    'info-panel'
+                )
+                .style
+                .display =
+                    'none';
+
+
+            /*
+             * 4. FERMA SCENA AR
+             */
+
+            try {
+
+                scene.pause();
+
+            }
+
+            catch (e) {
+
+                console.log(
+                    "AR pause:",
+                    e
+                );
+
+            }
+
+
+            /*
+             * 5. PROVA A CHIUDERE
+             */
+
+            try {
+
+                window.close();
+
+            }
+
+            catch (e) {
+
+                console.log(
+                    "window.close non consentito:",
+                    e
+                );
+
+            }
+
+
+            /*
+             * 6. FALLBACK
+             *
+             * Se il browser non permette
+             * window.close(), mostriamo
+             * la schermata di chiusura.
+             */
+
+            setTimeout(
+                () => {
+
+                    closeScreen.style.display =
+                        'flex';
+
+                },
+                150
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       REOPEN
+    ===================================================== */
+
+    reopenBtn.addEventListener(
+        'click',
+        () => {
+
+            closeScreen.style.display =
+                'none';
+
+
+            /*
+             * Riattiva la scena
+             */
+
+            try {
+
+                scene.play();
+
+            }
+
+            catch (e) {
+
+                console.log(
+                    "AR restart:",
+                    e
+                );
+
+            }
+
+
+            soundEnabled =
+                false;
+
+
+            soundBtn.textContent =
+                '🔇';
+
+
+            document
+                .getElementById(
+                    'footer-ui'
+                )
+                .classList
+                .add('show');
+
+        }
+    );
+
+
+    /* =====================================================
+       ATTIVA SYSTEM
+    ===================================================== */
+
+    scene.setAttribute(
+        'spin-system',
+        ''
+    );
+
+
+});
+
+</script>
+
+</body>
+</html>
